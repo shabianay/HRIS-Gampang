@@ -39,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/leave-types', LeaveTypeController::class);
 
     Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
+    Route::get('/attendances/{attendance}', [AttendanceController::class, 'show'])->name('attendances.show');
     Route::get('/attendances/create', [AttendanceController::class, 'create'])->name('attendances.create');
     Route::post('/attendances', [AttendanceController::class, 'store'])->name('attendances.store');
     Route::get('/attendances/export', [AttendanceController::class, 'export'])->name('attendances.export');

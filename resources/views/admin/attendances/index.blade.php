@@ -61,11 +61,7 @@
                             <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Clock In</th>
                             <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Clock Out</th>
                             <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Status</th>
-                            <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Terlambat</th>
-                            <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">IP Address</th>
-                            <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Lokasi GPS</th>
-                            <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Perangkat</th>
-                            <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Keterangan</th>
+                            <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-slate-100">
@@ -85,25 +81,13 @@
                                         {{ ucfirst($attendance->status) }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ $attendance->late_minutes ? $attendance->late_minutes . ' menit' : '-' }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ $attendance->ip_address ?? '-' }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                                    @if($attendance->latitude && $attendance->longitude)
-                                        <a href="https://www.google.com/maps?q={{ $attendance->latitude }},{{ $attendance->longitude }}" target="_blank" class="text-primary-600 hover:text-primary-700 underline" title="Buka di Google Maps">
-                                            {{ number_format($attendance->latitude, 4) }}, {{ number_format($attendance->longitude, 4) }}
-                                        </a>
-                                    @else
-                                        -
-                                    @endif
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <a href="{{ route('attendances.show', $attendance) }}" class="text-xs font-semibold text-primary-600 hover:text-primary-700 bg-primary-50 px-3 py-1.5 rounded-lg transition-colors">Detail</a>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 max-w-[150px] truncate" title="{{ $attendance->device_info ?? '-' }}">
-                                    {{ $attendance->device_info ? \Illuminate\Support\Str::limit($attendance->device_info, 30) : '-' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ $attendance->notes ?? '-' }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="10" class="px-6 py-12 text-center">
+                                <td colspan="6" class="px-6 py-12 text-center">
                                     <div class="flex flex-col items-center gap-2">
                                         <svg class="h-10 w-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                         <p class="text-sm text-slate-500">Tidak ada data kehadiran</p>

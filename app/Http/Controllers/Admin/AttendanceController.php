@@ -44,6 +44,13 @@ class AttendanceController extends Controller
         return view('admin.attendances.index', compact('attendances', 'departments'));
     }
 
+    public function show(Attendance $attendance)
+    {
+        $attendance->load(['employee.department', 'employee.position']);
+
+        return view('admin.attendances.show', compact('attendance'));
+    }
+
     public function create()
     {
         $employees = Employee::with('user')->where('status', 'aktif')->get();
