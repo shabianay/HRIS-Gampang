@@ -1,8 +1,40 @@
 <x-employee-layout>
     <div>
-        <div class="mb-6">
-            <h1 class="text-2xl font-bold text-slate-900">Riwayat Kehadiran</h1>
-            <p class="text-sm text-slate-500 mt-1">Catatan kehadiran Anda</p>
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">Kehadiran Mandiri</h1>
+                <p class="text-sm text-slate-500 mt-1">Catat kehadiran Anda hari ini</p>
+            </div>
+            <div class="flex items-center gap-3">
+                @if(!$todayAttendance)
+                    <form action="{{ route('employee.attendances.clockIn') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn-primary">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Clock In
+                        </button>
+                    </form>
+                @elseif(!$todayAttendance->clock_out)
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-medium text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100">
+                            Clock In: {{ $todayAttendance->clock_in->format('H:i') }}
+                        </span>
+                        <form action="{{ route('employee.attendances.clockOut') }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="btn-danger">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                Clock Out
+                            </button>
+                        </form>
+                    </div>
+                @else
+                    <div class="flex items-center gap-2 text-sm font-medium text-slate-600 bg-slate-100 px-4 py-2 rounded-xl">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        Absensi Hari Ini Selesai
+                    </div>
+                @endif
+            </div>
         </div>
 
         <div class="grid grid-cols-5 gap-3 mb-6">

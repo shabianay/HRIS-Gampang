@@ -28,7 +28,17 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route(auth()->user()->redirectHome());
+        $route = auth()->user()->redirectHome();
+        $role = auth()->user()->role;
+
+        \Illuminate\Support\Facades\Log::debug('Login redirect', [
+            'user_id' => auth()->id(),
+            'role' => $role,
+            'route_name' => $route,
+            'route_url' => route($route, absolute: false),
+        ]);
+
+        return redirect()->route($route);
     }
 
     /**
