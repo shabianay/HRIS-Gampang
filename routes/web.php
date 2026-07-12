@@ -24,6 +24,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('/employees', EmployeeController::class);
+    Route::get('/employees-archived', [EmployeeController::class, 'archived'])->name('employees.archived');
+    Route::patch('/employees/{employee}/restore', [EmployeeController::class, 'restore'])->name('employees.restore');
+    Route::delete('/employees/{employee}/force-delete', [EmployeeController::class, 'forceDelete'])->name('employees.force-delete');
     Route::get('/employees-import', [EmployeeImportController::class, 'create'])->name('employees.import.create');
     Route::post('/employees-import', [EmployeeImportController::class, 'store'])->name('employees.import.store');
 

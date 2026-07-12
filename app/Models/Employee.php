@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'user_id', 'nik', 'full_name', 'gender', 'birth_date', 'birth_place',
         'phone', 'address', 'department_id', 'position_id', 'join_date',

@@ -91,8 +91,34 @@ class EmployeeController extends Controller
     public function destroy(Employee $employee)
     {
         $employee->update(['status' => 'nonaktif']);
+        $employee->delete();
 
         return redirect()->route('employees.index')
-            ->with('success', 'Karyawan berhasil dinonaktifkan.');
+            ->with('success', 'Karyawan berhasil diarsipkan.');
+    }
+
+    public function archived()
+    {
+        $employees = Employee::onlyTrashed()->with(['department', 'position', 'user'])->latest('deleted_at')->paginate(10);
+
+        return view('admin.employees.archived', compact('employees'));
+    }
+
+    public function restore(Employee $employee)
+    {
+        $employee->restore();
+        $employee->update(['status' => 'aktif']);
+
+        return redirect()->route('employees.index')
+            ->with('success', 'Karyawan berhasil dipulihkan.');
+    }
+
+    public function forceDelete(Employee $employee)
+    {
+        $employee->user()->delete();
+        $employee->forceDelete();
+
+        return redirect()->route('employees.index')
+            ->with('success', 'Karyawan berhasil dihapus permanen.');
     }
 }

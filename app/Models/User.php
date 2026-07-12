@@ -33,7 +33,7 @@ class User extends Authenticatable
 
     public function redirectHome(): string
     {
-        return $this->isAdmin() ? 'dashboard' : 'employee.leave-requests.index';
+        return $this->isAdmin() ? 'dashboard' : 'employee.dashboard';
     }
 
     protected $hidden = [
