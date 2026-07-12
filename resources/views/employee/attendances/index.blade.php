@@ -116,6 +116,8 @@
                             <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Clock In</th>
                             <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Clock Out</th>
                             <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Status</th>
+                            <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Terlambat</th>
+                            <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">IP / Lokasi</th>
                             <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Keterangan</th>
                         </tr>
                     </thead>
@@ -135,11 +137,22 @@
                                         {{ ucfirst($attendance->status) }}
                                     </span>
                                 </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ $attendance->late_minutes ? $attendance->late_minutes . ' menit' : '-' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                    <div class="flex flex-col gap-0.5">
+                                        <span class="text-xs">{{ $attendance->ip_address ?? '-' }}</span>
+                                        @if($attendance->latitude && $attendance->longitude)
+                                            <a href="https://www.google.com/maps?q={{ $attendance->latitude }},{{ $attendance->longitude }}" target="_blank" class="text-[10px] text-primary-600 hover:text-primary-700">
+                                                {{ number_format($attendance->latitude, 4) }}, {{ number_format($attendance->longitude, 4) }}
+                                            </a>
+                                        @endif
+                                    </div>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ $attendance->notes ?? '-' }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-12 text-center">
+                                <td colspan="7" class="px-6 py-12 text-center">
                                     <div class="flex flex-col items-center gap-2">
                                         <svg class="h-10 w-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                         <p class="text-sm text-slate-500">Belum ada data kehadiran</p>

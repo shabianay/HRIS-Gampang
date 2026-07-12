@@ -62,16 +62,19 @@
                             <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Clock Out</th>
                             <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Status</th>
                             <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Terlambat</th>
-                            <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Aksi</th>
+                            <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">IP Address</th>
+                            <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Lokasi GPS</th>
+                            <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Perangkat</th>
+                            <th class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-4 text-left">Keterangan</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-slate-100">
                         @forelse($attendances as $attendance)
                             <tr class="hover:bg-slate-50/50 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{{ $attendance->employee->full_name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ \Carbon\Carbon::parse($attendance->date)->format('d/m/Y') }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '-' }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '-' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ $attendance->date->format('d/m/Y') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ $attendance->clock_in ? $attendance->clock_in->format('H:i') : '-' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ $attendance->clock_out ? $attendance->clock_out->format('H:i') : '-' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="badge
                                         @if($attendance->status == 'hadir') badge-success
@@ -83,13 +86,24 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ $attendance->late_minutes ? $attendance->late_minutes . ' menit' : '-' }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <a href="#" onclick="alert('Edit fitur belum tersedia')" class="text-primary-600 hover:text-primary-700 font-medium">Edit</a>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ $attendance->ip_address ?? '-' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                    @if($attendance->latitude && $attendance->longitude)
+                                        <a href="https://www.google.com/maps?q={{ $attendance->latitude }},{{ $attendance->longitude }}" target="_blank" class="text-primary-600 hover:text-primary-700 underline" title="Buka di Google Maps">
+                                            {{ number_format($attendance->latitude, 4) }}, {{ number_format($attendance->longitude, 4) }}
+                                        </a>
+                                    @else
+                                        -
+                                    @endif
                                 </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 max-w-[150px] truncate" title="{{ $attendance->device_info ?? '-' }}">
+                                    {{ $attendance->device_info ? \Illuminate\Support\Str::limit($attendance->device_info, 30) : '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ $attendance->notes ?? '-' }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-12 text-center">
+                                <td colspan="10" class="px-6 py-12 text-center">
                                     <div class="flex flex-col items-center gap-2">
                                         <svg class="h-10 w-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                         <p class="text-sm text-slate-500">Tidak ada data kehadiran</p>
