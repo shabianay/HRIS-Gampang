@@ -137,3 +137,4 @@ class AttendanceController extends Controller
 
         return back()->with('success', 'Clock Out berhasil dicatat!');
     }
+}
