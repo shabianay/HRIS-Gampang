@@ -38,13 +38,26 @@ class EmployeeImportController extends Controller
 
         $file = $request->file('file');
         $path = $file->getRealPath();
-        $data = array_map('str_getcsv', file($path));
+        $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
-        if (empty($data)) {
+        if (empty($lines)) {
             return back()->with('error', 'File CSV kosong.');
         }
 
-        // Asumsi baris pertama adalah header
+        // Auto-detect delimiter (tab, comma, or semicolon)
+        $firstLine = $lines[0];
+        $delimiter = "\t";
+        if (str_contains($firstLine, ',')) {
+            $delimiter = ',';
+        } elseif (str_contains($firstLine, ';')) {
+            $delimiter = ';';
+        }
+
+        $data = array_map(function ($line) use ($delimiter) {
+            return str_getcsv($line, $delimiter);
+        }, $lines);
+
+        // Ambil header dari baris pertama
         $header = array_map('trim', array_shift($data));
 
         $expectedHeader = [
@@ -53,8 +66,18 @@ class EmployeeImportController extends Controller
             'Nama Bank', 'Nomor Rekening', 'Nama Rekening', 'NPWP', 'BPJS Kesehatan', 'BPJS Ketenagakerjaan', 'Catatan',
         ];
 
-        if (count($header) !== count($expectedHeader) || array_diff($expectedHeader, $header)) {
-            return back()->withErrors(['file' => 'Format header CSV tidak sesuai. Harap gunakan template yang benar.']);
+        // Normalize header (trim values)
+        $header = array_map('trim', $header);
+
+        if (count($header) !== count($expectedHeader)) {
+            return back()->withErrors(['file' => 'Jumlah kolom header tidak sesuai. Diharapkan ' . count($expectedHeader) . ' kolom, tetapi ditemukan ' . count($header) . ' kolom. Pastikan file menggunakan tab (TSV) atau koma (CSV) sebagai pemisah.']);
+        }
+
+        // Check header matches (case-insensitive)
+        foreach ($header as $i => $h) {
+            if (strcasecmp(trim($h), $expectedHeader[$i]) !== 0) {
+                return back()->withErrors(['file' => 'Header kolom ke-' . ($i + 1) . ' tidak sesuai. Diharapkan "' . $expectedHeader[$i] . '" tetapi ditemukan "' . trim($h) . '".']);
+            }
         }
 
         $errors = [];
@@ -70,17 +93,39 @@ class EmployeeImportController extends Controller
 
                 $rowData = array_combine($expectedHeader, $row);
 
+                // Parse dates: handle multiple formats (d/m/Y, m/d/Y, Y-m-d)
+                $birthDate = $this->parseDate($rowData['Tanggal Lahir']);
+                $joinDate = $this->parseDate($rowData['Tanggal Gabung']);
+
+                if (!$birthDate) {
+                    $errors[] = 'Baris ' . ($rowNum + 2) . ': Format Tanggal Lahir tidak valid. Gunakan format YYYY-MM-DD atau DD/MM/YYYY.';
+                    continue;
+                }
+                if (!$joinDate) {
+                    $errors[] = 'Baris ' . ($rowNum + 2) . ': Format Tanggal Gabung tidak valid. Gunakan format YYYY-MM-DD atau DD/MM/YYYY.';
+                    continue;
+                }
+
+                $rowData['Tanggal Lahir'] = $birthDate;
+                $rowData['Tanggal Gabung'] = $joinDate;
+
+                // Clean NIK: remove scientific notation, ensure string
+                $rowData['NIK'] = $this->cleanNumeric($rowData['NIK']);
+
+                // Clean phone: ensure starts with 0
+                $rowData['Telepon'] = $this->cleanPhone($rowData['Telepon']);
+
                 $validator = Validator::make($rowData, [
                     'NIK' => 'required|string|unique:employees,nik',
                     'Nama Lengkap' => 'required|string|max:255',
                     'Email' => 'required|email|unique:users,email',
-                    'Tanggal Lahir' => 'required|date_format:Y-m-d',
+                    'Tanggal Lahir' => 'required|date',
                     'Jenis Kelamin' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
                     'Telepon' => 'nullable|string|max:20',
                     'Alamat' => 'nullable|string|max:500',
                     'Departemen' => 'required|exists:departments,name',
                     'Jabatan' => 'required|exists:positions,name',
-                    'Tanggal Gabung' => 'required|date_format:Y-m-d',
+                    'Tanggal Gabung' => 'required|date',
                     'Status' => ['required', Rule::in(['aktif', 'nonaktif', 'resign', 'cuti'])],
                     'Nama Bank' => 'nullable|string|max:255',
                     'Nomor Rekening' => 'nullable|string|max:255',
@@ -103,7 +148,7 @@ class EmployeeImportController extends Controller
                 $user = User::create([
                     'name' => $rowData['Nama Lengkap'],
                     'email' => $rowData['Email'],
-                    'password' => Hash::make('password'), // Default password
+                    'password' => Hash::make('password'),
                     'role' => 'pegawai',
                     'is_active' => true,
                 ]);
@@ -140,10 +185,83 @@ class EmployeeImportController extends Controller
         }
 
         if (!empty($errors)) {
-            return back()->withErrors($errors)->with('info', 'Beberapa pegawai berhasil diimpor, namun ada kesalahan pada baris tertentu.');
+            return back()->withErrors($errors)->with('info', $importedCount . ' pegawai berhasil diimpor, namun ada kesalahan pada baris tertentu.');
         }
 
         return redirect()->route('employees.index')
             ->with('success', $importedCount . ' pegawai berhasil diimpor.');
+    }
+
+    /**
+     * Parse date from various formats to Y-m-d
+     */
+    private function parseDate($date)
+    {
+        if (empty($date)) return null;
+
+        $date = trim($date);
+
+        // Already Y-m-d
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            return $date;
+        }
+
+        // d/m/Y or d/m/y
+        if (preg_match('#^(\d{1,2})/(\d{1,2})/(\d{4})$#', $date, $m)) {
+            return sprintf('%04d-%02d-%02d', $m[3], $m[2], $m[1]);
+        }
+
+        // m/d/Y
+        if (preg_match('#^(\d{1,2})-(\d{1,2})-(\d{4})$#', $date, $m)) {
+            return sprintf('%04d-%02d-%02d', $m[3], $m[1], $m[2]);
+        }
+
+        // Try Carbon parse as fallback
+        try {
+            return \Carbon\Carbon::parse($date)->format('Y-m-d');
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Clean numeric field (remove scientific notation, non-digit chars except dot/hyphen)
+     */
+    private function cleanNumeric($value)
+    {
+        $value = trim($value);
+        // Remove scientific notation (e.g., 3.17301E+15)
+        if (stripos($value, 'e') !== false) {
+            $value = number_format((float)$value, 0, '', '');
+        }
+        // Remove dots used as thousands separator but keep dashes for NPWP
+        if (str_contains($value, '.') && !str_contains($value, '-')) {
+            $value = str_replace('.', '', $value);
+        }
+        return $value;
+    }
+
+    /**
+     * Clean phone number - ensure starts with 0
+     */
+    private function cleanPhone($phone)
+    {
+        $phone = trim($phone);
+        if (empty($phone)) return null;
+
+        // Remove non-digit characters
+        $phone = preg_replace('/[^\d]/', '', $phone);
+
+        // If starts with 62, convert to 0
+        if (substr($phone, 0, 2) === '62') {
+            $phone = '0' . substr($phone, 2);
+        }
+
+        // If doesn't start with 0, add 0
+        if (substr($phone, 0, 1) !== '0') {
+            $phone = '0' . $phone;
+        }
+
+        return $phone;
     }
 }

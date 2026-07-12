@@ -20,11 +20,16 @@
                 </div>
 
                 <div class="mb-6">
-                    <p class="text-sm font-medium text-slate-700">Format header CSV yang diharapkan:</p>
-                    <ul class="list-disc list-inside text-sm text-slate-600 ml-4 mt-2">
-                        <li>NIK, Nama Lengkap, Email, Tanggal Lahir (YYYY-MM-DD), Tempat Lahir, Jenis Kelamin (Laki-laki/Perempuan), Telepon, Alamat, Departemen, Jabatan, Tanggal Gabung (YYYY-MM-DD), Status (aktif/nonaktif/resign/cuti), Nama Bank, Nomor Rekening, Nama Rekening, NPWP, BPJS Kesehatan, BPJS Ketenagakerjaan, Catatan</li>
-                    </ul>
-                    <p class="text-xs text-amber-600 mt-2">Catatan: Default password untuk user yang diimpor adalah 'password'. Harap instruksikan pegawai untuk mengubahnya setelah login pertama.</p>
+                    <p class="text-sm font-medium text-slate-700">Format header yang didukung (pemisah: Tab atau Koma):</p>
+                    <p class="text-xs text-slate-500 mt-1 font-mono bg-slate-50 p-3 rounded-lg border border-slate-200">NIK, Nama Lengkap, Email, Tanggal Lahir (YYYY-MM-DD), Tempat Lahir, Jenis Kelamin (Laki-laki/Perempuan), Telepon, Alamat, Departemen, Jabatan, Tanggal Gabung (YYYY-MM-DD), Status (aktif/nonaktif/resign/cuti), Nama Bank, Nomor Rekening, Nama Rekening, NPWP, BPJS Kesehatan, BPJS Ketenagakerjaan, Catatan</p>
+                    <p class="text-xs text-amber-600 mt-3">
+                        <strong>&#9432; Catatan Penting:</strong><br>
+                        &bull; Gunakan file dengan ekstensi <code>.csv</code> atau <code>.txt</code><br>
+                        &bull; Pemisah kolom bisa Tab, Koma (`,`), atau Titik Koma (`;`)<br>
+                        &bull; Tanggal bisa menggunakan format <code>YYYY-MM-DD</code> (contoh: 1990-01-01) atau <code>DD/MM/YYYY</code> (contoh: 01/01/1990)<br>
+                        &bull; Default password untuk user yang diimpor adalah <strong>password</strong>. Harap instruksikan pegawai untuk mengubahnya setelah login pertama.<br>
+                        &bull; Pastikan Nama Departemen dan Jabatan sudah tersedia di sistem (Pengaturan > Departemen/Jabatan).
+                    </p>
                 </div>
 
                 <div class="flex items-center gap-3">
