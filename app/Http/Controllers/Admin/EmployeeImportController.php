@@ -210,17 +210,32 @@ class EmployeeImportController extends Controller
             return $date;
         }
 
-        // d/m/Y or d/m/y
-        if (preg_match('#^(\d{1,2})/(\d{1,2})/(\d{4})$#', $date, $m)) {
-            return sprintf('%04d-%02d-%02d', $m[3], $m[2], $m[1]);
+        // Split by slash or dash
+        $parts = preg_split('#[/\-\.]#', $date);
+
+        if (count($parts) === 3 && is_numeric($parts[0]) && is_numeric($parts[1]) && is_numeric($parts[2])) {
+            $a = (int)$parts[0];
+            $b = (int)$parts[1];
+            $c = (int)$parts[2];
+
+            // Assume c is year (4 digits)
+            if ($c < 100) $c += 2000;
+
+            // If first part > 12, it must be day → d/m/Y
+            if ($a > 12) {
+                return sprintf('%04d-%02d-%02d', $c, $b, $a);
+            }
+
+            // If second part > 12, first part must be month → m/d/Y
+            if ($b > 12) {
+                return sprintf('%04d-%02d-%02d', $c, $a, $b);
+            }
+
+            // Both ≤ 12, ambiguous → assume m/d/Y (US format)
+            return sprintf('%04d-%02d-%02d', $c, $a, $b);
         }
 
-        // m/d/Y
-        if (preg_match('#^(\d{1,2})-(\d{1,2})-(\d{4})$#', $date, $m)) {
-            return sprintf('%04d-%02d-%02d', $m[3], $m[1], $m[2]);
-        }
-
-        // Try Carbon parse as fallback
+        // Try Carbon parse as last resort
         try {
             return \Carbon\Carbon::parse($date)->format('Y-m-d');
         } catch (\Exception $e) {
