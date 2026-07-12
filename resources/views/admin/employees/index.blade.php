@@ -5,14 +5,16 @@
                 <h1 class="text-2xl font-bold text-slate-900">Manajemen Pegawai</h1>
                 <p class="text-sm text-slate-500 mt-1">Kelola data seluruh pegawai</p>
             </div>
-            <a href="{{ route('employees.create') }}" class="btn-primary">
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                Tambah Pegawai
-            </a>
-            <a href="{{ route('employees.import.create') }}" class="btn-secondary">
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                Import CSV
-            </a>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('employees.create') }}" class="btn-primary">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    Tambah Pegawai
+                </a>
+                <a href="{{ route('employees.import.create') }}" class="btn-secondary">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    Import CSV
+                </a>
+            </div>
         </div>
 
         {{-- Filter Card --}}
