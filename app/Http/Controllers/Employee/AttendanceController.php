@@ -120,8 +120,8 @@ class AttendanceController extends Controller
             'clock_in' => $clockInTime,
             'clock_out' => null,
             'location' => $request->ip(),
-            'latitude' => $request->input('latitude'),
-            'longitude' => $request->input('longitude'),
+            'clock_in_latitude' => $request->input('latitude'),
+            'clock_in_longitude' => $request->input('longitude'),
             'device_info' => $request->header('User-Agent'),
             'ip_address' => $request->ip(),
             'status' => $status,
@@ -150,8 +150,8 @@ class AttendanceController extends Controller
 
         $todayAttendance->update([
             'clock_out' => now(),
-            'latitude' => $request->input('latitude', $todayAttendance->latitude),
-            'longitude' => $request->input('longitude', $todayAttendance->longitude),
+            'clock_out_latitude' => $request->input('latitude'),
+            'clock_out_longitude' => $request->input('longitude'),
             'device_info' => $request->header('User-Agent'),
             'ip_address' => $request->ip(),
         ]);

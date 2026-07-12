@@ -104,7 +104,7 @@ class AttendanceController extends Controller
 
         $callback = function () use ($attendances) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['Nama Pegawai', 'NIK', 'Departemen', 'Tanggal', 'Clock In', 'Clock Out', 'Status', 'Terlambat (menit)', 'Keterangan']);
+            fputcsv($file, ['Nama Pegawai', 'NIK', 'Departemen', 'Tanggal', 'Clock In', 'Clock Out', 'Status', 'Terlambat (menit)', 'Keterangan', 'IP Address', 'GPS In', 'GPS Out']);
 
             foreach ($attendances as $a) {
                 fputcsv($file, [
@@ -117,6 +117,9 @@ class AttendanceController extends Controller
                     ucfirst($a->status),
                     $a->late_minutes ?? 0,
                     $a->notes ?? '-',
+                    $a->ip_address ?? '-',
+                    ($a->clock_in_latitude && $a->clock_in_longitude) ? $a->clock_in_latitude . ',' . $a->clock_in_longitude : '-',
+                    ($a->clock_out_latitude && $a->clock_out_longitude) ? $a->clock_out_latitude . ',' . $a->clock_out_longitude : '-',
                 ]);
             }
             fclose($file);
