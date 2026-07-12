@@ -106,7 +106,11 @@ class AttendanceController extends Controller
             'date' => today(),
             'clock_in' => $clockInTime,
             'clock_out' => null,
-            'location' => $request->ip(), // Simple location based on IP
+            'location' => $request->ip(),
+            'latitude' => $request->input('latitude'),
+            'longitude' => $request->input('longitude'),
+            'device_info' => $request->header('User-Agent'),
+            'ip_address' => $request->ip(),
             'status' => $status,
             'late_minutes' => $lateMinutes,
             'notes' => $lateMinutes > 0 ? 'Terlambat ' . $lateMinutes . ' menit' : null,
@@ -115,7 +119,7 @@ class AttendanceController extends Controller
         return back()->with('success', 'Clock In berhasil dicatat!');
     }
 
-    public function clockOut()
+    public function clockOut(Request $request)
     {
         $employee = auth()->user()->employee;
 
@@ -133,6 +137,10 @@ class AttendanceController extends Controller
 
         $todayAttendance->update([
             'clock_out' => now(),
+            'latitude' => $request->input('latitude', $todayAttendance->latitude),
+            'longitude' => $request->input('longitude', $todayAttendance->longitude),
+            'device_info' => $request->header('User-Agent'),
+            'ip_address' => $request->ip(),
         ]);
 
         return back()->with('success', 'Clock Out berhasil dicatat!');

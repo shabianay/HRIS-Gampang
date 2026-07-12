@@ -9,6 +9,7 @@ class Attendance extends Model
 {
     protected $fillable = [
         'employee_id', 'date', 'clock_in', 'clock_out', 'location',
+        'latitude', 'longitude', 'device_info', 'ip_address',
         'status', 'late_minutes', 'notes',
     ];
 
@@ -16,6 +17,8 @@ class Attendance extends Model
         'date' => 'date',
         'clock_in' => 'datetime',
         'clock_out' => 'datetime',
+        'latitude' => 'decimal:7',
+        'longitude' => 'decimal:7',
     ];
 
     public function employee(): BelongsTo
