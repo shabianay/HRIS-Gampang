@@ -97,27 +97,6 @@
                         </a>
                         <div class="pt-5 mt-4 border-t border-slate-100">
                             <p class="px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">
-                                Laporan</p>
-                            <div class="mt-2 space-y-0.5">
-                                <a href="{{ route('reports.attendances') }}"
-                                    class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('reports.attendances') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                                    <svg class="h-5 w-5 flex-shrink-0 transition-all duration-200 {{ request()->routeIs('reports.attendances') ? 'text-primary-600' : 'text-slate-400 group-hover:text-slate-600' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    <span>Kehadiran</span>
-                                </a>
-                                <a href="{{ route('reports.leaves') }}"
-                                    class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('reports.leaves') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                                    <svg class="h-5 w-5 flex-shrink-0 transition-all duration-200 {{ request()->routeIs('reports.leaves') ? 'text-primary-600' : 'text-slate-400 group-hover:text-slate-600' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                    <span>Cuti</span>
-                                </a>
-                                <a href="{{ route('reports.payrolls') }}"
-                                    class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('reports.payrolls') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                                    <svg class="h-5 w-5 flex-shrink-0 transition-all duration-200 {{ request()->routeIs('reports.payrolls') ? 'text-primary-600' : 'text-slate-400 group-hover:text-slate-600' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    <span>Penggajian</span>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="pt-5 mt-4 border-t border-slate-100">
-                            <p class="px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">
                                 Pengaturan</p>
                             <div class="mt-2 space-y-0.5">
                                 <a href="{{ route('settings.departments') }}"
@@ -137,11 +116,6 @@
                                             d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
                                     <span>Jabatan</span>
-                                </a>
-                                <a href="{{ route('users.index') }}"
-                                    class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('users.*') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                                    <svg class="h-5 w-5 flex-shrink-0 {{ request()->routeIs('users.*') ? 'text-primary-600' : 'text-slate-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                    User
                                 </a>
                                 <a href="{{ route('users.index') }}"
                                     class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('users.*') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">

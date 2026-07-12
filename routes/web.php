@@ -9,7 +9,6 @@ use App\Http\Controllers\Admin\SalaryComponentController;
 use App\Http\Controllers\Admin\PayrollController as AdminPayrollController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\EmployeeImportController;
 use App\Http\Controllers\Admin\LogController;
 use App\Http\Controllers\Employee\LeaveRequestController as EmployeeLeaveRequestController;
@@ -67,10 +66,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-
-    Route::get('/reports/attendances', [\App\Http\Controllers\Admin\ReportController::class, 'attendances'])->name('reports.attendances');
-    Route::get('/reports/leaves', [\App\Http\Controllers\Admin\ReportController::class, 'leaves'])->name('reports.leaves');
-    Route::get('/reports/payrolls', [\App\Http\Controllers\Admin\ReportController::class, 'payrolls'])->name('reports.payrolls');
 
     Route::get('/logs', [LogController::class, 'index'])->name('logs.index');
 

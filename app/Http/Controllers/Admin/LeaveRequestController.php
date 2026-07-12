@@ -10,8 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class LeaveRequestController extends Controller
-
-class LeaveRequestController extends Controller
 {
     public function __construct()
     {
