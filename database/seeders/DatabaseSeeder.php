@@ -100,8 +100,22 @@ class DatabaseSeeder extends Seeder
                 'address' => 'Jl. Merdeka No. 10, Semarang',
             ],
         ];
+
+        // Create additional employees for demo data (without user_id)
+        $additionalEmployees = [
+            ['user_id' => null, 'nik' => '3273010101990005', 'full_name' => 'Siti Rahmawati', 'gender' => 'P', 'birth_date' => '1993-07-20', 'birth_place' => 'Jakarta', 'phone' => '081266666666', 'department_id' => 2, 'position_id' => 2, 'join_date' => '2023-01-15', 'status' => 'aktif', 'bank_name' => 'BRI', 'bank_account' => '1234567895', 'bank_account_name' => 'Siti Rahmawati', 'npwp' => '12.345.678.9-012.005', 'bpjs_kesehatan' => '0001234567895', 'bpjs_ketenagakerjaan' => '123456789017', 'address' => 'Jl. Sudirman No. 20, Jakarta'],
+            ['user_id' => null, 'nik' => '3273010101990006', 'full_name' => 'Budi Santoso', 'gender' => 'L', 'birth_date' => '1990-11-10', 'birth_place' => 'Surabaya', 'phone' => '081277777777', 'department_id' => 3, 'position_id' => 1, 'join_date' => '2021-06-01', 'status' => 'aktif', 'bank_name' => 'BNI', 'bank_account' => '1234567896', 'bank_account_name' => 'Budi Santoso', 'npwp' => '12.345.678.9-012.006', 'bpjs_kesehatan' => '0001234567896', 'bpjs_ketenagakerjaan' => '123456789018', 'address' => 'Jl. Ahmad Yani No. 5, Surabaya'],
+            ['user_id' => null, 'nik' => '3273010101990007', 'full_name' => 'Dewi Lestari', 'gender' => 'P', 'birth_date' => '1998-02-14', 'birth_place' => 'Yogyakarta', 'phone' => '081288888888', 'department_id' => 4, 'position_id' => 2, 'join_date' => '2024-03-01', 'status' => 'aktif', 'bank_name' => 'Mandiri', 'bank_account' => '1234567897', 'bank_account_name' => 'Dewi Lestari', 'npwp' => '12.345.678.9-012.007', 'bpjs_kesehatan' => '0001234567897', 'bpjs_ketenagakerjaan' => '123456789019', 'address' => 'Jl. Malioboro No. 15, Yogyakarta'],
+            ['user_id' => null, 'nik' => '3273010101990008', 'full_name' => 'Rizky Hidayat', 'gender' => 'L', 'birth_date' => '1994-09-30', 'birth_place' => 'Medan', 'phone' => '081299999999', 'department_id' => 5, 'position_id' => 1, 'join_date' => '2022-11-20', 'status' => 'aktif', 'bank_name' => 'BCA', 'bank_account' => '1234567898', 'bank_account_name' => 'Rizky Hidayat', 'npwp' => '12.345.678.9-012.008', 'bpjs_kesehatan' => '0001234567898', 'bpjs_ketenagakerjaan' => '123456789020', 'address' => 'Jl. Diponegoro No. 8, Medan'],
+            ['user_id' => null, 'nik' => '3273010101990009', 'full_name' => 'Nur Aisyah', 'gender' => 'P', 'birth_date' => '1996-12-25', 'birth_place' => 'Makassar', 'phone' => '081210101010', 'department_id' => 4, 'position_id' => 3, 'join_date' => '2020-08-10', 'status' => 'cuti', 'bank_name' => 'BTN', 'bank_account' => '1234567899', 'bank_account_name' => 'Nur Aisyah', 'npwp' => '12.345.678.9-012.009', 'bpjs_kesehatan' => '0001234567899', 'bpjs_ketenagakerjaan' => '123456789021', 'address' => 'Jl. Pahlawan No. 12, Makassar'],
+        ];
+
+        $createdEmployees = [];
         foreach ($employeeData as $data) {
-            Employee::create($data);
+            $createdEmployees[] = Employee::create($data);
+        }
+        foreach ($additionalEmployees as $data) {
+            $createdEmployees[] = Employee::create($data);
         }
 
         // ─── Leave Types ───────────────────────────────────────────────
@@ -118,25 +132,30 @@ class DatabaseSeeder extends Seeder
 
         // ─── Leave Requests ────────────────────────────────────────────
         $now = Carbon::now();
+        $emp4 = Employee::where('nik', '3273010101990005')->first();
+        $emp5 = Employee::where('nik', '3273010101990006')->first();
+        $emp6 = Employee::where('nik', '3273010101990007')->first();
+        $emp7 = Employee::where('nik', '3273010101990008')->first();
+
         $leaveRequests = [
-            ['employee_id' => 4, 'leave_type_id' => 1, 'start_date' => $now->copy()->subMonth()->startOfMonth()->addDays(5), 'end_date' => $now->copy()->subMonth()->startOfMonth()->addDays(7), 'days' => 3, 'reason' => 'Liburan keluarga ke Bali', 'status' => 'approved', 'approved_by_id' => 2, 'approved_at' => $now->copy()->subMonth()->startOfMonth()->addDays(2)],
-            ['employee_id' => 4, 'leave_type_id' => 2, 'start_date' => $now->copy()->addDays(10), 'end_date' => $now->copy()->addDays(11), 'days' => 2, 'reason' => 'Sakit demam', 'status' => 'pending', 'approved_by_id' => null, 'approved_at' => null],
-            ['employee_id' => 5, 'leave_type_id' => 2, 'start_date' => $now->copy()->subMonth()->addDays(15), 'end_date' => $now->copy()->subMonth()->addDays(16), 'days' => 2, 'reason' => 'Sakit flu', 'status' => 'approved', 'approved_by_id' => 2, 'approved_at' => $now->copy()->subMonth()->addDays(14)],
-            ['employee_id' => 5, 'leave_type_id' => 1, 'start_date' => $now->copy()->subMonths(2)->addDays(10), 'end_date' => $now->copy()->subMonths(2)->addDays(15), 'days' => 6, 'reason' => 'Mau liburan panjang', 'status' => 'rejected', 'approved_by_id' => 2, 'approved_at' => $now->copy()->subMonths(2)->addDays(8), 'rejection_reason' => 'Melebihi kuota cuti tahunan yang tersisa'],
-            ['employee_id' => 6, 'leave_type_id' => 3, 'start_date' => $now->copy()->subMonth()->addDays(5), 'end_date' => $now->copy()->subMonth()->addDays(7), 'days' => 3, 'reason' => 'Menikah', 'status' => 'approved', 'approved_by_id' => 3, 'approved_at' => $now->copy()->subMonth()->startOfMonth()->addDays(3)],
-            ['employee_id' => 7, 'leave_type_id' => 5, 'start_date' => $now->copy()->addDays(5), 'end_date' => $now->copy()->addDays(5), 'days' => 1, 'reason' => 'Ada acara keluarga', 'status' => 'pending', 'approved_by_id' => null, 'approved_at' => null],
-            ['employee_id' => 6, 'leave_type_id' => 1, 'start_date' => $now->copy()->subMonths(2)->addDays(3), 'end_date' => $now->copy()->subMonths(2)->addDays(5), 'days' => 3, 'reason' => 'Liburan ke Jogja', 'status' => 'approved', 'approved_by_id' => 3, 'approved_at' => $now->copy()->subMonths(2)->startOfMonth()->addDays(1)],
+            ['employee_id' => $emp4->id, 'leave_type_id' => 1, 'start_date' => $now->copy()->subMonth()->startOfMonth()->addDays(5), 'end_date' => $now->copy()->subMonth()->startOfMonth()->addDays(7), 'days' => 3, 'reason' => 'Liburan keluarga ke Bali', 'status' => 'approved', 'approved_by_id' => 2, 'approved_at' => $now->copy()->subMonth()->startOfMonth()->addDays(2)],
+            ['employee_id' => $emp4->id, 'leave_type_id' => 2, 'start_date' => $now->copy()->addDays(10), 'end_date' => $now->copy()->addDays(11), 'days' => 2, 'reason' => 'Sakit demam', 'status' => 'pending', 'approved_by_id' => null, 'approved_at' => null],
+            ['employee_id' => $emp5->id, 'leave_type_id' => 2, 'start_date' => $now->copy()->subMonth()->addDays(15), 'end_date' => $now->copy()->subMonth()->addDays(16), 'days' => 2, 'reason' => 'Sakit flu', 'status' => 'approved', 'approved_by_id' => 2, 'approved_at' => $now->copy()->subMonth()->addDays(14)],
+            ['employee_id' => $emp5->id, 'leave_type_id' => 1, 'start_date' => $now->copy()->subMonths(2)->addDays(10), 'end_date' => $now->copy()->subMonths(2)->addDays(15), 'days' => 6, 'reason' => 'Mau liburan panjang', 'status' => 'rejected', 'approved_by_id' => 2, 'approved_at' => $now->copy()->subMonths(2)->addDays(8), 'rejection_reason' => 'Melebihi kuota cuti tahunan yang tersisa'],
+            ['employee_id' => $emp6->id, 'leave_type_id' => 3, 'start_date' => $now->copy()->subMonth()->addDays(5), 'end_date' => $now->copy()->subMonth()->addDays(7), 'days' => 3, 'reason' => 'Menikah', 'status' => 'approved', 'approved_by_id' => 2, 'approved_at' => $now->copy()->subMonth()->startOfMonth()->addDays(3)],
+            ['employee_id' => $emp7->id, 'leave_type_id' => 5, 'start_date' => $now->copy()->addDays(5), 'end_date' => $now->copy()->addDays(5), 'days' => 1, 'reason' => 'Ada acara keluarga', 'status' => 'pending', 'approved_by_id' => null, 'approved_at' => null],
+            ['employee_id' => $emp6->id, 'leave_type_id' => 1, 'start_date' => $now->copy()->subMonths(2)->addDays(3), 'end_date' => $now->copy()->subMonths(2)->addDays(5), 'days' => 3, 'reason' => 'Liburan ke Jogja', 'status' => 'approved', 'approved_by_id' => 2, 'approved_at' => $now->copy()->subMonths(2)->startOfMonth()->addDays(1)],
         ];
         foreach ($leaveRequests as $data) {
             LeaveRequest::create($data);
         }
 
         // ─── Attendances ───────────────────────────────────────────────
-        $employees = Employee::whereIn('id', [4, 5, 6, 7])->get();
+        $attendanceEmployees = Employee::whereIn('nik', ['3273010101990005', '3273010101990006', '3273010101990007', '3273010101990008'])->get();
         $startOfMonth = $now->copy()->startOfMonth();
         $endOfMonth = $now->copy()->endOfMonth();
 
-        foreach ($employees as $employee) {
+        foreach ($attendanceEmployees as $employee) {
             $current = $startOfMonth->copy();
             while ($current->lte($endOfMonth)) {
                 if ($current->isWeekday()) {
