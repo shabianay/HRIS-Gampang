@@ -88,6 +88,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/payrolls/{payroll}/print', [EmployeePayrollController::class, 'print'])->name('payrolls.print');
 
         Route::get('/attendances', [\App\Http\Controllers\Employee\AttendanceController::class, 'index'])->name('attendances.index');
+        Route::get('/attendances/{attendance}', [\App\Http\Controllers\Employee\AttendanceController::class, 'show'])->name('attendances.show');
         Route::post('/attendances/clock-in', [\App\Http\Controllers\Employee\AttendanceController::class, 'clockIn'])->name('attendances.clockIn');
         Route::patch('/attendances/clock-out', [\App\Http\Controllers\Employee\AttendanceController::class, 'clockOut'])->name('attendances.clockOut');
     });

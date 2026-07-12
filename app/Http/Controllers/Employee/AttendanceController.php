@@ -77,6 +77,19 @@ class AttendanceController extends Controller
         return view('employee.attendances.index', compact('attendances', 'summary', 'todayAttendance'));
     }
 
+    public function show(Attendance $attendance)
+    {
+        $employee = auth()->user()->employee;
+
+        if ($attendance->employee_id !== $employee->id) {
+            abort(403);
+        }
+
+        $attendance->load(['employee.department', 'employee.position']);
+
+        return view('employee.attendances.show', compact('attendance'));
+    }
+
     public function clockIn(Request $request)
     {
         $employee = auth()->user()->employee;
