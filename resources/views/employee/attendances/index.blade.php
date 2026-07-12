@@ -9,9 +9,9 @@
                 @if(!$todayAttendance)
                     <form action="{{ route('employee.attendances.clockIn') }}" method="POST" id="clockInForm">
                         @csrf
-                        <input type="hidden" name="latitude" id="latitude">
-                        <input type="hidden" name="longitude" id="longitude">
-                        <button type="button" onclick="getLocation('clockInForm')" class="btn-primary">
+                        <input type="hidden" name="latitude" id="latIn">
+                        <input type="hidden" name="longitude" id="lngIn">
+                        <button type="button" onclick="getLocation('clockInForm', 'latIn', 'lngIn')" class="btn-primary">
                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             Clock In
                         </button>
@@ -24,9 +24,9 @@
                         <form action="{{ route('employee.attendances.clockOut') }}" method="POST" id="clockOutForm">
                             @csrf
                             @method('PATCH')
-                            <input type="hidden" name="latitude" id="latitude">
-                            <input type="hidden" name="longitude" id="longitude">
-                            <button type="button" onclick="getLocation('clockOutForm')" class="btn-danger">
+                            <input type="hidden" name="latitude" id="latOut">
+                            <input type="hidden" name="longitude" id="lngOut">
+                            <button type="button" onclick="getLocation('clockOutForm', 'latOut', 'lngOut')" class="btn-danger">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                                 Clock Out
                             </button>
@@ -41,16 +41,16 @@
             </div>
 
     <script>
-        function getLocation(formId) {
+        function getLocation(formId, latId, lngId) {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        document.getElementById(formId).querySelector('#latitude').value = position.coords.latitude;
-                        document.getElementById(formId).querySelector('#longitude').value = position.coords.longitude;
+                        document.getElementById(latId).value = position.coords.latitude;
+                        document.getElementById(lngId).value = position.coords.longitude;
                         document.getElementById(formId).submit();
                     },
                     (error) => {
-                        alert("Lokasi diperlukan untuk absensi.");
+                        alert("Lokasi diperlukan untuk absensi. Mohon izinkan akses lokasi.");
                         document.getElementById(formId).submit();
                     }
                 );
