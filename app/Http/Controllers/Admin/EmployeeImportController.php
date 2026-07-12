@@ -60,6 +60,10 @@ class EmployeeImportController extends Controller
         // Ambil header dari baris pertama
         $header = array_map('trim', array_shift($data));
 
+        // Hapus BOM (Byte Order Mark) dari header pertama
+        $header[0] = preg_replace('/^\xEF\xBB\xBF|\xEF\xBB\xBF$/', '', $header[0]);
+        $header[0] = trim($header[0]);
+
         $expectedHeader = [
             'NIK', 'Nama Lengkap', 'Email', 'Tanggal Lahir', 'Tempat Lahir', 'Jenis Kelamin',
             'Telepon', 'Alamat', 'Departemen', 'Jabatan', 'Tanggal Gabung', 'Status',
