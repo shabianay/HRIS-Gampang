@@ -63,20 +63,20 @@
                         <h2 class="text-base font-semibold text-slate-900">Statistik Cuti (6 Bulan)</h2>
                     </div>
                 </div>
-                <div class="flex items-end gap-2 h-40">
+                <div class="flex items-end gap-2 h-48">
                     @foreach($monthlyLeaves as $item)
-                        <div class="flex-1 flex flex-col items-center gap-1 h-full justify-end">
-                            <div class="w-full flex flex-col items-center gap-0.5">
-                                <div class="w-full rounded-t-md bg-emerald-400 transition-all hover:bg-emerald-500 cursor-pointer"
-                                     style="height: {{ $item['approved'] > 0 ? max(4, ($item['approved'] / $maxMonthly) * 100) : 0 }}%"
+                        <div class="flex-1 flex flex-col items-center h-full">
+                            <div class="relative flex-1 w-full flex flex-col items-center justify-end gap-0.5 pb-1">
+                                <div class="w-full rounded-t-md bg-emerald-400 transition-all hover:bg-emerald-500 cursor-pointer shadow-sm"
+                                     style="height: {{ $item['approved'] > 0 ? max(5, round(($item['approved'] / $maxMonthly) * 100)) : 0 }}%"
                                      title="Disetujui: {{ $item['approved'] }}">
                                 </div>
-                                <div class="w-full rounded-b-md bg-red-400 transition-all hover:bg-red-500 cursor-pointer"
-                                     style="height: {{ $item['rejected'] > 0 ? max(4, ($item['rejected'] / $maxMonthly) * 100) : 0 }}%"
+                                <div class="w-full rounded-b-md bg-red-400 transition-all hover:bg-red-500 cursor-pointer shadow-sm"
+                                     style="height: {{ $item['rejected'] > 0 ? max(5, round(($item['rejected'] / $maxMonthly) * 100)) : 0 }}%"
                                      title="Ditolak: {{ $item['rejected'] }}">
                                 </div>
                             </div>
-                            <span class="text-[11px] font-medium text-slate-500 mt-1">{{ $item['month'] }}</span>
+                            <span class="text-[10px] font-semibold text-slate-500 mt-2 uppercase">{{ $item['month'] }}</span>
                         </div>
                     @endforeach
                 </div>

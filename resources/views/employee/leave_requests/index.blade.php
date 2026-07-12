@@ -31,13 +31,23 @@
                                 <span class="badge
                                     @if($lr->status == 'pending') badge-warning
                                     @elseif($lr->status == 'approved') badge-success
+                                    @elseif($lr->status == 'cancelled') badge-secondary
                                     @else badge-danger
                                     @endif">
                                     {{ ucfirst($lr->status) }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <a href="{{ route('employee.leave-requests.show', $lr) }}" class="text-primary-600 hover:text-primary-700">Detail</a>
+                                <div class="flex items-center gap-2">
+                                    <a href="{{ route('employee.leave-requests.show', $lr) }}" class="text-primary-600 hover:text-primary-700">Detail</a>
+                                    @if($lr->status == 'pending')
+                                        <form action="{{ route('employee.leave-requests.cancel', $lr) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="text-xs text-red-600 hover:text-red-700 font-medium" onclick="return confirm('Yakin ingin membatalkan pengajuan cuti ini?')">Batal</button>
+                                        </form>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty

@@ -8,6 +8,10 @@ use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\SalaryComponentController;
 use App\Http\Controllers\Admin\PayrollController as AdminPayrollController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\EmployeeImportController;
+use App\Http\Controllers\Admin\LogController;
 use App\Http\Controllers\Employee\LeaveRequestController as EmployeeLeaveRequestController;
 use App\Http\Controllers\Employee\PayrollController as EmployeePayrollController;
 use App\Http\Controllers\ProfileController;
@@ -21,11 +25,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('/employees', EmployeeController::class);
+    Route::get('/employees-import', [EmployeeImportController::class, 'create'])->name('employees.import.create');
+    Route::post('/employees-import', [EmployeeImportController::class, 'store'])->name('employees.import.store');
 
     Route::get('/leave-requests', [AdminLeaveRequestController::class, 'index'])->name('leave-requests.index');
     Route::get('/leave-requests/{leaveRequest}', [AdminLeaveRequestController::class, 'show'])->name('leave-requests.show');
     Route::patch('/leave-requests/{leaveRequest}/approve', [AdminLeaveRequestController::class, 'approve'])->name('leave-requests.approve');
     Route::patch('/leave-requests/{leaveRequest}/reject', [AdminLeaveRequestController::class, 'reject'])->name('leave-requests.reject');
+    Route::patch('/leave-requests/{leaveRequest}/cancel', [AdminLeaveRequestController::class, 'cancel'])->name('leave-requests.cancel');
 
     Route::resource('/leave-types', LeaveTypeController::class);
 
@@ -40,6 +47,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/payrolls/create', [AdminPayrollController::class, 'create'])->name('payrolls.create');
     Route::post('/payrolls', [AdminPayrollController::class, 'store'])->name('payrolls.store');
     Route::get('/payrolls/{payroll}', [AdminPayrollController::class, 'show'])->name('payrolls.show');
+    Route::get('/payrolls/{payroll}/edit', [AdminPayrollController::class, 'edit'])->name('payrolls.edit');
+    Route::put('/payrolls/{payroll}', [AdminPayrollController::class, 'update'])->name('payrolls.update');
+    Route::get('/payrolls/{payroll}/print', [AdminPayrollController::class, 'print'])->name('payrolls.print');
     Route::patch('/payrolls/{payroll}/paid', [AdminPayrollController::class, 'markAsPaid'])->name('payrolls.mark-paid');
     Route::post('/payrolls/bulk-paid', [AdminPayrollController::class, 'bulkMarkAsPaid'])->name('payrolls.bulk-paid');
 
@@ -53,6 +63,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/settings/positions/{position}', [SettingController::class, 'updatePosition'])->name('settings.positions.update');
     Route::delete('/settings/positions/{position}', [SettingController::class, 'destroyPosition'])->name('settings.positions.destroy');
 
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    Route::get('/reports/attendances', [\App\Http\Controllers\Admin\ReportController::class, 'attendances'])->name('reports.attendances');
+    Route::get('/reports/leaves', [\App\Http\Controllers\Admin\ReportController::class, 'leaves'])->name('reports.leaves');
+    Route::get('/reports/payrolls', [\App\Http\Controllers\Admin\ReportController::class, 'payrolls'])->name('reports.payrolls');
+
+    Route::get('/logs', [LogController::class, 'index'])->name('logs.index');
+
     // Employee (pegawai) routes
     Route::prefix('pegawai')->name('employee.')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Employee\DashboardController::class, 'index'])->name('dashboard');
@@ -60,10 +81,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/leave-requests', [EmployeeLeaveRequestController::class, 'index'])->name('leave-requests.index');
         Route::get('/leave-requests/create', [EmployeeLeaveRequestController::class, 'create'])->name('leave-requests.create');
         Route::post('/leave-requests', [EmployeeLeaveRequestController::class, 'store'])->name('leave-requests.store');
+        Route::patch('/leave-requests/{leaveRequest}/cancel', [EmployeeLeaveRequestController::class, 'cancel'])->name('leave-requests.cancel');
         Route::get('/leave-requests/{leaveRequest}', [EmployeeLeaveRequestController::class, 'show'])->name('leave-requests.show');
 
         Route::get('/payrolls', [EmployeePayrollController::class, 'index'])->name('payrolls.index');
         Route::get('/payrolls/{payroll}', [EmployeePayrollController::class, 'show'])->name('payrolls.show');
+        Route::get('/payrolls/{payroll}/print', [EmployeePayrollController::class, 'print'])->name('payrolls.print');
+
+        Route::get('/attendances', [\App\Http\Controllers\Employee\AttendanceController::class, 'index'])->name('attendances.index');
     });
 });
 

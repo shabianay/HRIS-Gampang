@@ -70,7 +70,51 @@ class AttendanceController extends Controller
 
     public function export()
     {
-        return redirect()->route('attendances.index')
-            ->with('info', 'Fitur export sedang dalam pengembangan.');
+        $query = Attendance::with(['employee.department', 'employee.position']);
+
+        if ($date = request('date_from')) {
+            $query->whereDate('date', '>=', $date);
+        }
+        if ($date = request('date_to')) {
+            $query->whereDate('date', '<=', $date);
+        }
+        if ($department = request('department')) {
+            $query->whereHas('employee', function ($q) use ($department) {
+                $q->where('department_id', $department);
+            });
+        }
+        if ($status = request('status')) {
+            $query->where('status', $status);
+        }
+
+        $attendances = $query->latest('date')->get();
+
+        $filename = 'kehadiran_' . now()->format('Y-m-d_His') . '.csv';
+        $headers = [
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
+
+        $callback = function () use ($attendances) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['Nama Pegawai', 'NIK', 'Departemen', 'Tanggal', 'Clock In', 'Clock Out', 'Status', 'Terlambat (menit)', 'Keterangan']);
+
+            foreach ($attendances as $a) {
+                fputcsv($file, [
+                    $a->employee->full_name ?? '-',
+                    $a->employee->nik ?? '-',
+                    $a->employee->department?->name ?? '-',
+                    $a->date->format('d/m/Y'),
+                    $a->clock_in ? $a->clock_in->format('H:i') : '-',
+                    $a->clock_out ? $a->clock_out->format('H:i') : '-',
+                    ucfirst($a->status),
+                    $a->late_minutes ?? 0,
+                    $a->notes ?? '-',
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

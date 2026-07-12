@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('days');
             $table->string('reason');
             $table->text('supporting_document')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'cancelled'])->default('pending');
             $table->foreignId('approved_by_id')->nullable()->constrained('users');
             $table->timestamp('approved_at')->nullable();
             $table->text('rejection_reason')->nullable();

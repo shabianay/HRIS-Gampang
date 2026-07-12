@@ -44,6 +44,77 @@ class PayrollController extends Controller
         return view('admin.payrolls.show', compact('payroll'));
     }
 
+    public function edit(Payroll $payroll)
+    {
+        if ($payroll->status === 'paid') {
+            return back()->with('error', 'Payroll yang sudah dibayar tidak dapat diedit.');
+        }
+
+        $employees = Employee::with('user')->where('status', 'aktif')->get();
+        $salaryComponents = SalaryComponent::where('is_active', true)->get();
+
+        return view('admin.payrolls.edit', compact('payroll', 'employees', 'salaryComponents'));
+    }
+
+    public function update(Request $request, Payroll $payroll)
+    {
+        if ($payroll->status === 'paid') {
+            return back()->with('error', 'Payroll yang sudah dibayar tidak dapat diedit.');
+        }
+
+        $validated = $request->validate([
+            'employee_id' => 'required|exists:employees,id',
+            'period' => 'required|string|max:7',
+            'base_salary' => 'required|numeric|min:0',
+            'salary_components' => 'nullable|array',
+            'salary_components.*' => 'exists:salary_components,id',
+        ]);
+
+        $componentIds = $request->input('salary_components', []);
+        $selectedComponents = SalaryComponent::whereIn('id', $componentIds)->get();
+
+        $allowances = [];
+        $deductions = [];
+        $totalAllowance = 0;
+        $totalDeduction = 0;
+
+        foreach ($selectedComponents as $component) {
+            $amount = $component->calculation === 'percentage'
+                ? $validated['base_salary'] * $component->amount / 100
+                : $component->amount;
+
+            if ($component->type === 'allowance') {
+                $allowances[$component->code] = $amount;
+                $totalAllowance += $amount;
+            } else {
+                $deductions[$component->code] = $amount;
+                $totalDeduction += $amount;
+            }
+        }
+
+        $netSalary = $validated['base_salary'] + $totalAllowance - $totalDeduction;
+
+        $validated['total_allowance'] = $totalAllowance;
+        $validated['total_deduction'] = $totalDeduction;
+        $validated['net_salary'] = max(0, $netSalary);
+        $validated['details'] = [
+            'allowances' => $allowances,
+            'deductions' => $deductions,
+        ];
+
+        $payroll->update($validated);
+
+        return redirect()->route('payrolls.show', $payroll)
+            ->with('success', 'Payroll berhasil diperbarui.');
+    }
+
+    public function print(Payroll $payroll)
+    {
+        $payroll->load(['employee.department', 'employee.position']);
+
+        return view('admin.payrolls.print', compact('payroll'));
+    }
+
     public function create()
     {
         $employees = Employee::with('user')->where('status', 'aktif')->get();

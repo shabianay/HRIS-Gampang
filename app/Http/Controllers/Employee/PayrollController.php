@@ -41,4 +41,17 @@ class PayrollController extends Controller
 
         return view('employee.payrolls.show', compact('payroll'));
     }
+
+    public function print(Payroll $payroll)
+    {
+        $employee = auth()->user()->employee;
+
+        if ($payroll->employee_id !== $employee->id) {
+            abort(403);
+        }
+
+        $payroll->load(['employee.department', 'employee.position']);
+
+        return view('employee.payrolls.print', compact('payroll'));
+    }
 }

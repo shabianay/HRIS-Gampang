@@ -39,21 +39,30 @@ class DashboardController extends Controller
         $monthlyLeaves = collect();
         for ($i = 5; $i >= 0; $i--) {
             $month = now()->subMonths($i);
-            $approved = LeaveRequest::whereYear('start_date', $month->year)
-                ->whereMonth('start_date', $month->month)
+            $approved = LeaveRequest::where(function ($query) use ($month) {
+                $query->whereYear('start_date', '<=', $month->year)
+                      ->whereMonth('start_date', '<=', $month->month)
+                      ->whereYear('end_date', '>=', $month->year)
+                      ->whereMonth('end_date', '>=', $month->month);
+            })
                 ->where('status', 'approved')
                 ->count();
-            $rejected = LeaveRequest::whereYear('start_date', $month->year)
-                ->whereMonth('start_date', $month->month)
+            $rejected = LeaveRequest::where(function ($query) use ($month) {
+                $query->whereYear('start_date', '<=', $month->year)
+                      ->whereMonth('start_date', '<=', $month->month)
+                      ->whereYear('end_date', '>=', $month->year)
+                      ->whereMonth('end_date', '>=', $month->month);
+            })
                 ->where('status', 'rejected')
                 ->count();
+
             $monthlyLeaves->push([
                 'month' => $month->isoFormat('MMM'),
                 'approved' => $approved,
                 'rejected' => $rejected,
             ]);
         }
-        $maxMonthly = max($monthlyLeaves->max('approved'), $monthlyLeaves->max('rejected'), 1);
+            $maxMonthly = max($monthlyLeaves->max('approved'), $monthlyLeaves->max('rejected'), 1);
 
         // ─── Recent pending leave requests ───────────────────────────
         $recentLeaves = LeaveRequest::with(['employee', 'leaveType'])

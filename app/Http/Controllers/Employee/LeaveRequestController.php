@@ -110,4 +110,28 @@ class LeaveRequestController extends Controller
 
         return view('employee.leave_requests.show', compact('leaveRequest'));
     }
+
+    public function cancel(LeaveRequest $leaveRequest)
+    {
+        $employee = auth()->user()->employee;
+
+        if ($leaveRequest->employee_id !== $employee->id) {
+            abort(403);
+        }
+
+        if ($leaveRequest->status !== 'pending') {
+            return back()->with('error', 'Hanya pengajuan dengan status pending yang dapat dibatalkan.');
+        }
+
+        $leaveRequest->update([
+            'status' => 'cancelled',
+        ]);
+
+        if ($leaveRequest->supporting_document) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($leaveRequest->supporting_document);
+        }
+
+        return redirect()->route('employee.leave-requests.index')
+            ->with('success', 'Pengajuan cuti berhasil dibatalkan.');
+    }
 }

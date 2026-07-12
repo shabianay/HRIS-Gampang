@@ -35,6 +35,7 @@
                     <span class="badge
                         @if($leaveRequest->status == 'pending') badge-warning
                         @elseif($leaveRequest->status == 'approved') badge-success
+                        @elseif($leaveRequest->status == 'cancelled') badge-secondary
                         @else badge-danger
                         @endif">
                         {{ ucfirst($leaveRequest->status) }}
@@ -66,7 +67,12 @@
                     <form action="{{ route('leave-requests.reject', $leaveRequest) }}" method="POST">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="btn-danger text-sm px-5 py-2.5">Tolak</button>
+                        <button type="button" @click="$store.confirm.open('Tolak pengajuan cuti ini?', 'reject-leave-{{ $leaveRequest->id }}', { confirmText: 'Ya, Tolak', type: 'warning' })" class="btn-danger text-sm px-5 py-2.5">Tolak</button>
+                    </form>
+                    <form action="{{ route('leave-requests.cancel', $leaveRequest) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn-secondary text-sm px-5 py-2.5" onclick="return confirm('Yakin ingin membatalkan pengajuan cuti ini?')">Batal</button>
                     </form>
                 </div>
             @endif
