@@ -17,7 +17,7 @@ return new class extends Migration
             $table->decimal('total_deduction', 12, 2)->default(0);
             $table->decimal('net_salary', 12, 2);
             $table->text('details')->nullable(); // JSON to store salary components
-            $table->enum('status', ['draft', 'processed', 'paid'])->default('draft');
+            $table->enum('status', ['pending', 'processed', 'paid'])->default('pending');
             $table->date('payment_date')->nullable();
             $table->timestamps();
         });

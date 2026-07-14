@@ -29,6 +29,7 @@ class LeaveRequestNotification extends Mailable
             : 'Pengajuan Cuti Ditolak';
 
         return new Envelope(
+            to: [$this->leaveRequest->employee->user->email],
             subject: $subject . ' - ' . config('app.name'),
         );
     }

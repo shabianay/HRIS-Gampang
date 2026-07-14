@@ -33,6 +33,11 @@
                             <svg class="h-5 w-5 flex-shrink-0 transition-all duration-200 {{ request()->routeIs('employee.dashboard') ? 'text-primary-600' : 'text-slate-400 group-hover:text-slate-600' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                             <span>Dashboard</span>
                         </a>
+                        <a href="{{ route('employee.attendances.index') }}"
+                           class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('employee.attendances.*') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                            <svg class="h-5 w-5 flex-shrink-0 transition-all duration-200 {{ request()->routeIs('employee.attendances.*') ? 'text-primary-600' : 'text-slate-400 group-hover:text-slate-600' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>Kehadiran</span>
+                        </a>
                         <a href="{{ route('employee.leave-requests.index') }}"
                            class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('employee.leave-requests.*') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                             <svg class="h-5 w-5 flex-shrink-0 transition-all duration-200 {{ request()->routeIs('employee.leave-requests.*') ? 'text-primary-600' : 'text-slate-400 group-hover:text-slate-600' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -41,19 +46,14 @@
                         <a href="{{ route('employee.payrolls.index') }}"
                            class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('employee.payrolls.*') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                             <svg class="h-5 w-5 flex-shrink-0 transition-all duration-200 {{ request()->routeIs('employee.payrolls.*') ? 'text-primary-600' : 'text-slate-400 group-hover:text-slate-600' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span>Penggajian</span>
-                        </a>
-                        <a href="{{ route('employee.attendances.index') }}"
-                           class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('employee.attendances.*') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                            <svg class="h-5 w-5 flex-shrink-0 transition-all duration-200 {{ request()->routeIs('employee.attendances.*') ? 'text-primary-600' : 'text-slate-400 group-hover:text-slate-600' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span>Kehadiran</span>
+                            <span>Slip Gaji</span>
                         </a>
                         <div class="pt-5 mt-4 border-t border-slate-100">
                             <p class="px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">Akun</p>
                             <div class="mt-2 space-y-0.5">
-                                <a href="{{ route('profile.edit') }}"
-                                   class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('profile.edit') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                                    <svg class="h-5 w-5 flex-shrink-0 transition-all duration-200 {{ request()->routeIs('profile.edit') ? 'text-primary-600' : 'text-slate-400 group-hover:text-slate-600' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                <a href="{{ route('employee.profile.edit') }}"
+                                   class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('employee.profile.edit') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                                    <svg class="h-5 w-5 flex-shrink-0 transition-all duration-200 {{ request()->routeIs('employee.profile.edit') ? 'text-primary-600' : 'text-slate-400 group-hover:text-slate-600' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                     <span>Profil</span>
                                 </a>
                             </div>
@@ -89,6 +89,11 @@
                             <svg class="h-5 w-5 flex-shrink-0 {{ request()->routeIs('employee.dashboard') ? 'text-primary-600' : 'text-slate-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                             Dashboard
                         </a>
+                        <a href="{{ route('employee.attendances.index') }}"
+                           class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('employee.attendances.*') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                            <svg class="h-5 w-5 flex-shrink-0 {{ request()->routeIs('employee.attendances.*') ? 'text-primary-600' : 'text-slate-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Kehadiran
+                        </a>
                         <a href="{{ route('employee.leave-requests.index') }}"
                            class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('employee.leave-requests.*') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                             <svg class="h-5 w-5 flex-shrink-0 {{ request()->routeIs('employee.leave-requests.*') ? 'text-primary-600' : 'text-slate-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -97,19 +102,14 @@
                         <a href="{{ route('employee.payrolls.index') }}"
                            class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('employee.payrolls.*') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                             <svg class="h-5 w-5 flex-shrink-0 {{ request()->routeIs('employee.payrolls.*') ? 'text-primary-600' : 'text-slate-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            Penggajian
-                        </a>
-                        <a href="{{ route('employee.attendances.index') }}"
-                           class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('employee.attendances.*') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                            <svg class="h-5 w-5 flex-shrink-0 {{ request()->routeIs('employee.attendances.*') ? 'text-primary-600' : 'text-slate-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            Kehadiran
+                            Slip Gaji
                         </a>
                         <div class="pt-5 mt-4 border-t border-slate-100">
                             <p class="px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">Akun</p>
                             <div class="mt-2 space-y-0.5">
-                                <a href="{{ route('profile.edit') }}"
-                                   class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('profile.edit') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                                    <svg class="h-5 w-5 flex-shrink-0 {{ request()->routeIs('profile.edit') ? 'text-primary-600' : 'text-slate-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                <a href="{{ route('employee.profile.edit') }}"
+                                   class="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('employee.profile.edit') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                                    <svg class="h-5 w-5 flex-shrink-0 {{ request()->routeIs('employee.profile.edit') ? 'text-primary-600' : 'text-slate-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                     Profil
                                 </a>
                             </div>
@@ -144,7 +144,7 @@
                                 <p class="text-xs text-slate-500">{{ auth()->user()->email }}</p>
                             </div>
                             <div class="py-1">
-                                <x-dropdown-link :href="route('profile.edit')">
+                                <x-dropdown-link :href="route('employee.profile.edit')">
                                     <div class="flex items-center gap-2">
                                         <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                         {{ __('Profile') }}
@@ -179,7 +179,7 @@
                                 <p class="text-xs text-slate-500">{{ auth()->user()->email }}</p>
                             </div>
                             <div class="py-1">
-                                <x-dropdown-link :href="route('profile.edit')">{{ __('Profile') }}</x-dropdown-link>
+                                <x-dropdown-link :href="route('employee.profile.edit')">{{ __('Profile') }}</x-dropdown-link>
                             </div>
                             <div class="border-t border-slate-200 py-1">
                                 <form method="POST" action="{{ route('logout') }}">

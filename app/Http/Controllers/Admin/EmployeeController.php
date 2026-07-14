@@ -58,14 +58,41 @@ class EmployeeController extends Controller
     {
         $departments = Department::all();
         $positions = Position::all();
-        $users = User::whereDoesntHave('employee')->get();
 
-        return view('admin.employees.create', compact('departments', 'positions', 'users'));
+        return view('admin.employees.create', compact('departments', 'positions'));
     }
 
     public function store(StoreEmployeeRequest $request)
     {
-        Employee::create($request->validated());
+        $user = User::create([
+            'name' => $request->full_name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => $request->role,
+            'is_active' => true,
+        ]);
+
+        $employee = Employee::create([
+            'user_id' => $user->id,
+            'nik' => $request->nik,
+            'full_name' => $request->full_name,
+            'gender' => $request->gender,
+            'birth_date' => $request->birth_date,
+            'birth_place' => $request->birth_place,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'department_id' => $request->department_id,
+            'position_id' => $request->position_id,
+            'join_date' => $request->join_date,
+            'status' => $request->status,
+            'bank_name' => $request->bank_name,
+            'bank_account' => $request->bank_account,
+            'bank_account_name' => $request->bank_account_name,
+            'npwp' => $request->npwp,
+            'bpjs_kesehatan' => $request->bpjs_kesehatan,
+            'bpjs_ketenagakerjaan' => $request->bpjs_ketenagakerjaan,
+            'notes' => $request->notes,
+        ]);
 
         return redirect()->route('employees.index')
             ->with('success', 'Karyawan berhasil ditambahkan.');
@@ -75,13 +102,24 @@ class EmployeeController extends Controller
     {
         $departments = Department::all();
         $positions = Position::all();
-        $users = User::whereDoesntHave('employee')->orWhereHas('employee', fn($q) => $q->where('id', $employee->id))->get();
 
-        return view('admin.employees.edit', compact('employee', 'departments', 'positions', 'users'));
+        return view('admin.employees.edit', compact('employee', 'departments', 'positions'));
     }
 
     public function update(UpdateEmployeeRequest $request, Employee $employee)
     {
+        $employee->user->update([
+            'name' => $request->full_name,
+            'email' => $request->email,
+            'role' => $request->role,
+        ]);
+
+        if ($request->filled('password')) {
+            $employee->user->update([
+                'password' => bcrypt($request->password),
+            ]);
+        }
+
         $employee->update($request->validated());
 
         return redirect()->route('employees.index')
@@ -91,10 +129,21 @@ class EmployeeController extends Controller
     public function destroy(Employee $employee)
     {
         $employee->update(['status' => 'nonaktif']);
+        $employee->user()->update(['is_active' => false]);
         $employee->delete();
 
         return redirect()->route('employees.index')
             ->with('success', 'Karyawan berhasil diarsipkan.');
+    }
+
+    public function restore(Employee $employee)
+    {
+        $employee->restore();
+        $employee->update(['status' => 'aktif']);
+        $employee->user()->update(['is_active' => true]);
+
+        return redirect()->route('employees.index')
+            ->with('success', 'Karyawan berhasil dipulihkan.');
     }
 
     public function archived()
@@ -102,15 +151,6 @@ class EmployeeController extends Controller
         $employees = Employee::onlyTrashed()->with(['department', 'position', 'user'])->latest('deleted_at')->paginate(10);
 
         return view('admin.employees.archived', compact('employees'));
-    }
-
-    public function restore(Employee $employee)
-    {
-        $employee->restore();
-        $employee->update(['status' => 'aktif']);
-
-        return redirect()->route('employees.index')
-            ->with('success', 'Karyawan berhasil dipulihkan.');
     }
 
     public function forceDelete(Employee $employee)

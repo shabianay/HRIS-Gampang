@@ -12,20 +12,10 @@
         </div>
 
         <div class="card">
-            <form method="POST" action="{{ route('employees.store') }}" x-data="{ userId: '', users: {{ $users->toJson() }} }">
+            <form method="POST" action="{{ route('employees.store') }}">
                 @csrf
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div class="space-y-1.5">
-                        <x-input-label for="user_id" value="User" />
-                        <select id="user_id" name="user_id" x-model="userId" class="input-field">
-                            <option value="">Pilih User</option>
-                            <template x-for="user in users" :key="user.id">
-                                <option :value="user.id" x-text="user.email"></option>
-                            </template>
-                        </select>
-                        <x-input-error :messages="$errors->get('user_id')" class="mt-1" />
-                    </div>
 
                     <div class="space-y-1.5">
                         <x-input-label for="nik" value="NIK" />
@@ -35,8 +25,29 @@
 
                     <div class="space-y-1.5">
                         <x-input-label for="full_name" value="Nama Lengkap" />
-                        <x-text-input id="full_name" name="full_name" type="text" class="block w-full" :value="old('full_name')" x-bind:value="userId ? users.find(u => u.id == userId)?.name ?? '' : ''" required />
+                        <x-text-input id="full_name" name="full_name" type="text" class="block w-full" :value="old('full_name')" required />
                         <x-input-error :messages="$errors->get('full_name')" class="mt-1" />
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <x-input-label for="email" value="Email (Akun Login)" />
+                        <x-text-input id="email" name="email" type="email" class="block w-full" :value="old('email')" required />
+                        <x-input-error :messages="$errors->get('email')" class="mt-1" />
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <x-input-label for="password" value="Password" />
+                        <x-text-input id="password" name="password" type="password" class="block w-full" />
+                        <x-input-error :messages="$errors->get('password')" class="mt-1" />
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <x-input-label for="role" value="Role / Hak Akses" />
+                        <select id="role" name="role" class="input-field">
+                            <option value="pegawai" {{ old('role', 'pegawai') == 'pegawai' ? 'selected' : '' }}>Pegawai</option>
+                            <option value="admin_hr" {{ old('role') == 'admin_hr' ? 'selected' : '' }}>Admin HR</option>
+                        </select>
+                        <x-input-error :messages="$errors->get('role')" class="mt-1" />
                     </div>
 
                     <div class="space-y-1.5">

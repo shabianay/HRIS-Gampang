@@ -85,7 +85,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Rp {{ number_format($payroll->net_salary, 0, ',', '.') }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="badge
-                                        @if($payroll->status == 'draft') badge
+                                        @if($payroll->status == 'pending') badge
                                         @elseif($payroll->status == 'processed') badge-warning
                                         @else badge-success
                                         @endif">

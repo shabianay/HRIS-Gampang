@@ -20,6 +20,12 @@ class UpdateEmployeeRequest extends FormRequest
                 Rule::unique('employees', 'nik')->ignore($this->route('employee')),
             ],
             'full_name' => 'required|string|max:255',
+            'email' => [
+                'required', 'email', 'max:255',
+                Rule::unique('users', 'email')->ignore($this->route('employee')->user_id),
+            ],
+            'password' => 'nullable|string|min:6',
+            'role' => 'required|in:admin_hr,pegawai',
             'gender' => 'required|in:L,P',
             'birth_date' => 'required|date',
             'birth_place' => 'nullable|string|max:255',

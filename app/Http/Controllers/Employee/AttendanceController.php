@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
+use App\Models\OfficeHour;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AttendanceController extends Controller
 {
@@ -46,32 +49,17 @@ class AttendanceController extends Controller
 
         $attendances = $query->latest('date')->paginate(10);
 
+        $baseQuery = Attendance::where('employee_id', $employee->id)
+            ->whereMonth('date', now()->month)
+            ->whereYear('date', now()->year);
+
         $summary = [
-            'hadir' => Attendance::where('employee_id', $employee->id)
-                ->whereMonth('date', now()->month)
-                ->whereYear('date', now()->year)
-                ->where('status', 'hadir')
-                ->count(),
-            'terlambat' => Attendance::where('employee_id', $employee->id)
-                ->whereMonth('date', now()->month)
-                ->whereYear('date', now()->year)
-                ->where('status', 'terlambat')
-                ->count(),
-            'absen' => Attendance::where('employee_id', $employee->id)
-                ->whereMonth('date', now()->month)
-                ->whereYear('date', now()->year)
-                ->where('status', 'absen')
-                ->count(),
-            'izin' => Attendance::where('employee_id', $employee->id)
-                ->whereMonth('date', now()->month)
-                ->whereYear('date', now()->year)
-                ->where('status', 'izin')
-                ->count(),
-            'sakit' => Attendance::where('employee_id', $employee->id)
-                ->whereMonth('date', now()->month)
-                ->whereYear('date', now()->year)
-                ->where('status', 'sakit')
-                ->count(),
+            'hadir' => (clone $baseQuery)->where('status', 'hadir')->count(),
+            'terlambat' => (clone $baseQuery)->where('status', 'terlambat')->count(),
+            'absen' => (clone $baseQuery)->where('status', 'absen')->count(),
+            'izin' => (clone $baseQuery)->where('status', 'izin')->count(),
+            'sakit' => (clone $baseQuery)->where('status', 'sakit')->count(),
+            'total_hari' => (clone $baseQuery)->count(),
         ];
 
         return view('employee.attendances.index', compact('attendances', 'summary', 'todayAttendance'));
@@ -99,12 +87,15 @@ class AttendanceController extends Controller
             ->whereDate('date', today())
             ->first();
 
-        if ($existingAttendance) {
+        if ($existingAttendance && $existingAttendance->clock_in) {
             return back()->with('error', 'Anda sudah melakukan clock in hari ini.');
         }
 
         $clockInTime = now();
-        $standardClockInTime = Carbon::parse('08:00:00'); // Standard 8 AM
+        
+        // Ambil pengaturan jam kantor dari database
+        $officeHour = OfficeHour::first();
+        $standardClockInTime = $officeHour ? Carbon::parse($officeHour->clock_in_time) : Carbon::parse('08:00:00');
 
         $lateMinutes = 0;
         $status = 'hadir';
@@ -114,11 +105,23 @@ class AttendanceController extends Controller
             $status = 'terlambat';
         }
 
-        Attendance::create([
-            'employee_id' => $employee->id,
-            'date' => today(),
+        $photoInPath = null;
+        if ($request->filled('photo')) {
+            $base64Image = $request->input('photo');
+            $base64Image = Str::after($base64Image, 'base64,');
+            $decodedImage = base64_decode($base64Image);
+
+            if ($decodedImage) {
+                $fileName = 'attendance-photos/' . Str::uuid() . '.jpeg';
+                Storage::disk('public')->put($fileName, $decodedImage);
+                $photoInPath = $fileName;
+            } else {
+                Log::error('Failed to decode base64 image for clock-in.');
+            }
+        }
+
+        $data = [
             'clock_in' => $clockInTime,
-            'clock_out' => null,
             'location' => $request->ip(),
             'clock_in_latitude' => $request->input('latitude'),
             'clock_in_longitude' => $request->input('longitude'),
@@ -126,8 +129,18 @@ class AttendanceController extends Controller
             'ip_address' => $request->ip(),
             'status' => $status,
             'late_minutes' => $lateMinutes,
-            'notes' => $lateMinutes > 0 ? 'Terlambat ' . $lateMinutes . ' menit' : null,
-        ]);
+            'photo_in' => $photoInPath,
+        ];
+
+        if ($existingAttendance) {
+            // Update existing record (e.g., previously marked as izin/sakit)
+            $existingAttendance->update($data);
+        } else {
+            // Create new record
+            $data['employee_id'] = $employee->id;
+            $data['date'] = today();
+            Attendance::create($data);
+        }
 
         return back()->with('success', 'Clock In berhasil dicatat!');
     }
@@ -148,12 +161,29 @@ class AttendanceController extends Controller
             return back()->with('error', 'Anda sudah melakukan clock out hari ini.');
         }
 
+        $photoOutPath = null;
+        if ($request->filled('photo')) {
+            $base64Image = $request->input('photo');
+            // Remove data URI scheme header if present (e.g., "data:image/jpeg;base64,")
+            $base64Image = Str::after($base64Image, 'base64,');
+            $decodedImage = base64_decode($base64Image);
+
+            if ($decodedImage) {
+                $fileName = 'attendance-photos/' . Str::uuid() . '.jpeg';
+                Storage::disk('public')->put($fileName, $decodedImage);
+                $photoOutPath = $fileName;
+            } else {
+                Log::error('Failed to decode base64 image for clock-out.');
+            }
+        }
+
         $todayAttendance->update([
             'clock_out' => now(),
             'clock_out_latitude' => $request->input('latitude'),
             'clock_out_longitude' => $request->input('longitude'),
             'device_info' => $request->header('User-Agent'),
             'ip_address' => $request->ip(),
+            'photo_out' => $photoOutPath, // Changed from clock_out_photo_url
         ]);
 
         return back()->with('success', 'Clock Out berhasil dicatat!');

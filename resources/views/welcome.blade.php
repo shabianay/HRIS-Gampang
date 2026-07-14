@@ -786,7 +786,6 @@
 
         <div class="mt-14 flex flex-col items-center justify-between gap-4 border-t border-slate-800 pt-8 sm:flex-row">
             <p class="text-xs text-slate-500">&copy; {{ date('Y') }} HRIS Gampang. All rights reserved.</p>
-            <span class="text-xs text-slate-500">Made with <span class="text-primary-400">&hearts;</span> in Indonesia</span>
         </div>
     </div>
 </footer>

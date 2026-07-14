@@ -24,6 +24,12 @@
                     <x-input-error :messages="$errors->get('leave_type_id')" class="mt-1" />
                 </div>
                 <div class="space-y-1.5">
+                    <x-input-label for="supporting_document" value="Dokumen Pendukung (opsional)" />
+                    <input id="supporting_document" name="supporting_document" type="file" class="input-field file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
+                    <p class="text-xs text-slate-400 mt-1">Format: PDF, JPG, PNG. Maksimal 1MB.</p>
+                    <x-input-error :messages="$errors->get('supporting_document')" class="mt-1" />
+                </div>
+                <div class="space-y-1.5">
                     <x-input-label for="start_date" value="Tanggal Mulai" />
                     <x-text-input id="start_date" name="start_date" type="date" class="block w-full" :value="old('start_date')" />
                     <x-input-error :messages="$errors->get('start_date')" class="mt-1" />
@@ -32,12 +38,6 @@
                     <x-input-label for="end_date" value="Tanggal Selesai" />
                     <x-text-input id="end_date" name="end_date" type="date" class="block w-full" :value="old('end_date')" />
                     <x-input-error :messages="$errors->get('end_date')" class="mt-1" />
-                </div>
-                <div class="space-y-1.5">
-                    <x-input-label for="supporting_document" value="Dokumen Pendukung (opsional)" />
-                    <input id="supporting_document" name="supporting_document" type="file" class="input-field file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
-                    <p class="text-xs text-slate-400 mt-1">Format: PDF, JPG, PNG. Maksimal 1MB.</p>
-                    <x-input-error :messages="$errors->get('supporting_document')" class="mt-1" />
                 </div>
                 <div class="md:col-span-2 space-y-1.5">
                     <x-input-label for="reason" value="Alasan" />

@@ -21,12 +21,27 @@ class PayrollController extends Controller
     {
         $employee = auth()->user()->employee;
 
+        $allPeriods = Payroll::where('employee_id', $employee->id)->pluck('period');
+        $years = $allPeriods->map(fn ($p) => substr($p, 0, 4))->unique()->sortDesc()->values();
+        $selectedYear = request('year', $years->first() ?? now()->year);
+
         $payrolls = Payroll::with(['employee.department', 'employee.position'])
             ->where('employee_id', $employee->id)
-            ->latest()
-            ->paginate(10);
+            ->where('period', 'like', $selectedYear . '-%')
+            ->orderBy('period', 'desc')
+            ->paginate(12);
 
-        return view('employee.payrolls.index', compact('payrolls'));
+        $totalReceived = Payroll::where('employee_id', $employee->id)
+            ->where('period', 'like', $selectedYear . '-%')
+            ->where('status', 'paid')
+            ->sum('net_salary');
+
+        $latest = Payroll::where('employee_id', $employee->id)
+            ->where('period', 'like', $selectedYear . '-%')
+            ->orderBy('period', 'desc')
+            ->first();
+
+        return view('employee.payrolls.index', compact('payrolls', 'years', 'selectedYear', 'totalReceived', 'latest'));
     }
 
     public function show(Payroll $payroll)

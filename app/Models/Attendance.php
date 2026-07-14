@@ -12,7 +12,7 @@ class Attendance extends Model
         'clock_in_latitude', 'clock_in_longitude',
         'clock_out_latitude', 'clock_out_longitude',
         'device_info', 'ip_address',
-        'status', 'late_minutes', 'notes',
+        'status', 'late_minutes', 'notes', 'photo_in', 'photo_out',
     ];
 
     protected $casts = [

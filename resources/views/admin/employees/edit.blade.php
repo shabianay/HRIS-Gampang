@@ -12,21 +12,11 @@
         </div>
 
         <div class="card">
-            <form method="POST" action="{{ route('employees.update', $employee) }}" x-data="{ userId: '{{ $employee->user_id }}', users: {{ $users->toJson() }} }">
+            <form method="POST" action="{{ route('employees.update', $employee) }}">
                 @csrf
                 @method('PUT')
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div class="space-y-1.5">
-                        <x-input-label for="user_id" value="User" />
-                        <select id="user_id" name="user_id" x-model="userId" class="input-field">
-                            <option value="">Pilih User</option>
-                            <template x-for="user in users" :key="user.id">
-                                <option :value="user.id" x-text="user.email"></option>
-                            </template>
-                        </select>
-                        <x-input-error :messages="$errors->get('user_id')" class="mt-1" />
-                    </div>
                     <div class="space-y-1.5">
                         <x-input-label for="nik" value="NIK" />
                         <x-text-input id="nik" name="nik" type="text" class="block w-full" :value="old('nik', $employee->nik)" required />
@@ -34,8 +24,29 @@
                     </div>
                     <div class="space-y-1.5">
                         <x-input-label for="full_name" value="Nama Lengkap" />
-                        <x-text-input id="full_name" name="full_name" type="text" class="block w-full" :value="old('full_name', $employee->full_name)" x-bind:value="userId ? users.find(u => u.id == userId)?.name ?? '{{ $employee->full_name }}' : '{{ $employee->full_name }}'" required />
+                        <x-text-input id="full_name" name="full_name" type="text" class="block w-full" :value="old('full_name', $employee->full_name)" required />
                         <x-input-error :messages="$errors->get('full_name')" class="mt-1" />
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <x-input-label for="email" value="Email (Akun Login)" />
+                        <x-text-input id="email" name="email" type="email" class="block w-full" :value="old('email', $employee->user->email ?? '')" required />
+                        <x-input-error :messages="$errors->get('email')" class="mt-1" />
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <x-input-label for="password" value="Password (kosongkan jika tidak diubah)" />
+                        <x-text-input id="password" name="password" type="password" class="block w-full" />
+                        <x-input-error :messages="$errors->get('password')" class="mt-1" />
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <x-input-label for="role" value="Role / Hak Akses" />
+                        <select id="role" name="role" class="input-field">
+                            <option value="pegawai" {{ old('role', $employee->user->role ?? 'pegawai') == 'pegawai' ? 'selected' : '' }}>Pegawai</option>
+                            <option value="admin_hr" {{ old('role', $employee->user->role ?? '') == 'admin_hr' ? 'selected' : '' }}>Admin HR</option>
+                        </select>
+                        <x-input-error :messages="$errors->get('role')" class="mt-1" />
                     </div>
                     <div class="space-y-1.5">
                         <x-input-label for="gender" value="Jenis Kelamin" />

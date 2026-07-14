@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Mail\LeaveRequestNotification;
+use App\Models\Attendance;
 use App\Models\Department;
 use App\Models\LeaveRequest;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -64,8 +66,25 @@ class LeaveRequestController extends Controller
             'approved_at' => now(),
         ]);
 
+        // Buat Attendance records untuk setiap hari cuti
+        $leaveTypeName = strtolower($leaveRequest->leaveType->name ?? '');
+        $status = in_array($leaveTypeName, ['izin', 'sakit']) ? $leaveTypeName : 'izin';
+
+        $period = CarbonPeriod::create($leaveRequest->start_date, $leaveRequest->end_date);
+        foreach ($period as $date) {
+            Attendance::firstOrCreate(
+                [
+                    'employee_id' => $leaveRequest->employee_id,
+                    'date' => $date,
+                ],
+                [
+                    'status' => $status,
+                ]
+            );
+        }
+
         // Kirim notifikasi email ke pegawai
-        Mail->send(new LeaveRequestNotification($leaveRequest, 'approved'));
+        Mail::send(new LeaveRequestNotification($leaveRequest, 'approved'));
 
         return redirect()->route('leave-requests.index')
             ->with('success', 'Pengajuan cuti berhasil disetujui.');

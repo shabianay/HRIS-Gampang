@@ -16,6 +16,9 @@ class StoreEmployeeRequest extends FormRequest
         return [
             'nik' => 'required|string|max:20|unique:employees,nik',
             'full_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6',
+            'role' => 'required|in:admin_hr,pegawai',
             'gender' => 'required|in:L,P',
             'birth_date' => 'required|date',
             'birth_place' => 'nullable|string|max:255',

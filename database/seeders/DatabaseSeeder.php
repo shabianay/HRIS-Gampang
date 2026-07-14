@@ -42,26 +42,11 @@ class DatabaseSeeder extends Seeder
             Position::create($data);
         }
 
-        // ─── Users ─────────────────────────────────────────────────────
-        $users = [
-            ['name' => 'Admin HR', 'email' => 'admin@hris.com', 'role' => 'admin_hr'],
-            ['name' => 'Shabian', 'email' => 'pegawai@hris.com', 'role' => 'pegawai'],
-        ];
-        $createdUsers = [];
-        foreach ($users as $data) {
-            $createdUsers[] = User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => 'password',
-                'role' => $data['role'],
-                'is_active' => true,
-            ]);
-        }
-
-        // ─── Employees ─────────────────────────────────────────────────
+        // ─── Users & Employees ──────────────────────────────────────────
         $employeeData = [
             [
-                'user_id' => 1,
+                'email' => 'admin@hris.com',
+                'role' => 'admin_hr',
                 'nik' => '3273010101990001',
                 'full_name' => 'Admin HR',
                 'gender' => 'P',
@@ -80,9 +65,10 @@ class DatabaseSeeder extends Seeder
                 'bpjs_ketenagakerjaan' => '123456789013',
             ],
             [
-                'user_id' => 2,
+                'email' => 'pegawai@hris.com',
+                'role' => 'pegawai',
                 'nik' => '3273010101990004',
-                'full_name' => 'Ahmad Fauzi',
+                'full_name' => 'Shabian Arsyl',
                 'gender' => 'L',
                 'birth_date' => '1995-03-05',
                 'birth_place' => 'Semarang',
@@ -93,29 +79,149 @@ class DatabaseSeeder extends Seeder
                 'status' => 'aktif',
                 'bank_name' => 'BCA',
                 'bank_account' => '1234567894',
-                'bank_account_name' => 'Ahmad Fauzi',
+                'bank_account_name' => 'Shabian Arsyl',
                 'npwp' => '12.345.678.9-012.004',
                 'bpjs_kesehatan' => '0001234567894',
                 'bpjs_ketenagakerjaan' => '123456789016',
                 'address' => 'Jl. Merdeka No. 10, Semarang',
             ],
-        ];
-
-        // Create additional employees for demo data (without user_id)
-        $additionalEmployees = [
-            ['user_id' => null, 'nik' => '3273010101990005', 'full_name' => 'Siti Rahmawati', 'gender' => 'P', 'birth_date' => '1993-07-20', 'birth_place' => 'Jakarta', 'phone' => '081266666666', 'department_id' => 2, 'position_id' => 2, 'join_date' => '2023-01-15', 'status' => 'aktif', 'bank_name' => 'BRI', 'bank_account' => '1234567895', 'bank_account_name' => 'Siti Rahmawati', 'npwp' => '12.345.678.9-012.005', 'bpjs_kesehatan' => '0001234567895', 'bpjs_ketenagakerjaan' => '123456789017', 'address' => 'Jl. Sudirman No. 20, Jakarta'],
-            ['user_id' => null, 'nik' => '3273010101990006', 'full_name' => 'Budi Santoso', 'gender' => 'L', 'birth_date' => '1990-11-10', 'birth_place' => 'Surabaya', 'phone' => '081277777777', 'department_id' => 3, 'position_id' => 1, 'join_date' => '2021-06-01', 'status' => 'aktif', 'bank_name' => 'BNI', 'bank_account' => '1234567896', 'bank_account_name' => 'Budi Santoso', 'npwp' => '12.345.678.9-012.006', 'bpjs_kesehatan' => '0001234567896', 'bpjs_ketenagakerjaan' => '123456789018', 'address' => 'Jl. Ahmad Yani No. 5, Surabaya'],
-            ['user_id' => null, 'nik' => '3273010101990007', 'full_name' => 'Dewi Lestari', 'gender' => 'P', 'birth_date' => '1998-02-14', 'birth_place' => 'Yogyakarta', 'phone' => '081288888888', 'department_id' => 4, 'position_id' => 2, 'join_date' => '2024-03-01', 'status' => 'aktif', 'bank_name' => 'Mandiri', 'bank_account' => '1234567897', 'bank_account_name' => 'Dewi Lestari', 'npwp' => '12.345.678.9-012.007', 'bpjs_kesehatan' => '0001234567897', 'bpjs_ketenagakerjaan' => '123456789019', 'address' => 'Jl. Malioboro No. 15, Yogyakarta'],
-            ['user_id' => null, 'nik' => '3273010101990008', 'full_name' => 'Rizky Hidayat', 'gender' => 'L', 'birth_date' => '1994-09-30', 'birth_place' => 'Medan', 'phone' => '081299999999', 'department_id' => 5, 'position_id' => 1, 'join_date' => '2022-11-20', 'status' => 'aktif', 'bank_name' => 'BCA', 'bank_account' => '1234567898', 'bank_account_name' => 'Rizky Hidayat', 'npwp' => '12.345.678.9-012.008', 'bpjs_kesehatan' => '0001234567898', 'bpjs_ketenagakerjaan' => '123456789020', 'address' => 'Jl. Diponegoro No. 8, Medan'],
-            ['user_id' => null, 'nik' => '3273010101990009', 'full_name' => 'Nur Aisyah', 'gender' => 'P', 'birth_date' => '1996-12-25', 'birth_place' => 'Makassar', 'phone' => '081210101010', 'department_id' => 4, 'position_id' => 3, 'join_date' => '2020-08-10', 'status' => 'cuti', 'bank_name' => 'BTN', 'bank_account' => '1234567899', 'bank_account_name' => 'Nur Aisyah', 'npwp' => '12.345.678.9-012.009', 'bpjs_kesehatan' => '0001234567899', 'bpjs_ketenagakerjaan' => '123456789021', 'address' => 'Jl. Pahlawan No. 12, Makassar'],
+            [
+                'email' => 'siti@hris.com',
+                'role' => 'pegawai',
+                'nik' => '3273010101990005',
+                'full_name' => 'Siti Rahmawati',
+                'gender' => 'P',
+                'birth_date' => '1993-07-20',
+                'birth_place' => 'Jakarta',
+                'phone' => '081266666666',
+                'department_id' => 2,
+                'position_id' => 2,
+                'join_date' => '2023-01-15',
+                'status' => 'aktif',
+                'bank_name' => 'BRI',
+                'bank_account' => '1234567895',
+                'bank_account_name' => 'Siti Rahmawati',
+                'npwp' => '12.345.678.9-012.005',
+                'bpjs_kesehatan' => '0001234567895',
+                'bpjs_ketenagakerjaan' => '123456789017',
+                'address' => 'Jl. Sudirman No. 20, Jakarta',
+            ],
+            [
+                'email' => 'budi@hris.com',
+                'role' => 'pegawai',
+                'nik' => '3273010101990006',
+                'full_name' => 'Budi Santoso',
+                'gender' => 'L',
+                'birth_date' => '1990-11-10',
+                'birth_place' => 'Surabaya',
+                'phone' => '081277777777',
+                'department_id' => 3,
+                'position_id' => 1,
+                'join_date' => '2021-06-01',
+                'status' => 'aktif',
+                'bank_name' => 'BNI',
+                'bank_account' => '1234567896',
+                'bank_account_name' => 'Budi Santoso',
+                'npwp' => '12.345.678.9-012.006',
+                'bpjs_kesehatan' => '0001234567896',
+                'bpjs_ketenagakerjaan' => '123456789018',
+                'address' => 'Jl. Ahmad Yani No. 5, Surabaya',
+            ],
+            [
+                'email' => 'dewi@hris.com',
+                'role' => 'pegawai',
+                'nik' => '3273010101990007',
+                'full_name' => 'Dewi Lestari',
+                'gender' => 'P',
+                'birth_date' => '1998-02-14',
+                'birth_place' => 'Yogyakarta',
+                'phone' => '081288888888',
+                'department_id' => 4,
+                'position_id' => 2,
+                'join_date' => '2024-03-01',
+                'status' => 'aktif',
+                'bank_name' => 'Mandiri',
+                'bank_account' => '1234567897',
+                'bank_account_name' => 'Dewi Lestari',
+                'npwp' => '12.345.678.9-012.007',
+                'bpjs_kesehatan' => '0001234567897',
+                'bpjs_ketenagakerjaan' => '123456789019',
+                'address' => 'Jl. Malioboro No. 15, Yogyakarta',
+            ],
+            [
+                'email' => 'rizky@hris.com',
+                'role' => 'pegawai',
+                'nik' => '3273010101990008',
+                'full_name' => 'Rizky Hidayat',
+                'gender' => 'L',
+                'birth_date' => '1994-09-30',
+                'birth_place' => 'Medan',
+                'phone' => '081299999999',
+                'department_id' => 5,
+                'position_id' => 1,
+                'join_date' => '2022-11-20',
+                'status' => 'aktif',
+                'bank_name' => 'BCA',
+                'bank_account' => '1234567898',
+                'bank_account_name' => 'Rizky Hidayat',
+                'npwp' => '12.345.678.9-012.008',
+                'bpjs_kesehatan' => '0001234567898',
+                'bpjs_ketenagakerjaan' => '123456789020',
+                'address' => 'Jl. Diponegoro No. 8, Medan',
+            ],
+            [
+                'email' => 'nur@hris.com',
+                'role' => 'pegawai',
+                'nik' => '3273010101990009',
+                'full_name' => 'Nur Aisyah',
+                'gender' => 'P',
+                'birth_date' => '1996-12-25',
+                'birth_place' => 'Makassar',
+                'phone' => '081210101010',
+                'department_id' => 4,
+                'position_id' => 3,
+                'join_date' => '2020-08-10',
+                'status' => 'cuti',
+                'bank_name' => 'BTN',
+                'bank_account' => '1234567899',
+                'bank_account_name' => 'Nur Aisyah',
+                'npwp' => '12.345.678.9-012.009',
+                'bpjs_kesehatan' => '0001234567899',
+                'bpjs_ketenagakerjaan' => '123456789021',
+                'address' => 'Jl. Pahlawan No. 12, Makassar',
+            ],
         ];
 
         $createdEmployees = [];
         foreach ($employeeData as $data) {
-            $createdEmployees[] = Employee::create($data);
-        }
-        foreach ($additionalEmployees as $data) {
-            $createdEmployees[] = Employee::create($data);
+            $user = User::create([
+                'name' => $data['full_name'],
+                'email' => $data['email'],
+                'password' => 'password',
+                'role' => $data['role'],
+                'is_active' => true,
+            ]);
+
+            $createdEmployees[] = Employee::create([
+                'user_id' => $user->id,
+                'nik' => $data['nik'],
+                'full_name' => $data['full_name'],
+                'gender' => $data['gender'],
+                'birth_date' => $data['birth_date'],
+                'birth_place' => $data['birth_place'],
+                'phone' => $data['phone'],
+                'address' => $data['address'] ?? null,
+                'department_id' => $data['department_id'],
+                'position_id' => $data['position_id'],
+                'join_date' => $data['join_date'],
+                'status' => $data['status'],
+                'bank_name' => $data['bank_name'],
+                'bank_account' => $data['bank_account'],
+                'bank_account_name' => $data['bank_account_name'],
+                'npwp' => $data['npwp'],
+                'bpjs_kesehatan' => $data['bpjs_kesehatan'],
+                'bpjs_ketenagakerjaan' => $data['bpjs_ketenagakerjaan'],
+            ]);
         }
 
         // ─── Leave Types ───────────────────────────────────────────────
@@ -151,35 +257,27 @@ class DatabaseSeeder extends Seeder
         }
 
         // ─── Attendances ───────────────────────────────────────────────
-        $attendanceEmployees = Employee::whereIn('nik', ['3273010101990005', '3273010101990006', '3273010101990007', '3273010101990008'])->get();
-        $startOfMonth = $now->copy()->startOfMonth();
-        $endOfMonth = $now->copy()->endOfMonth();
+        $attendanceSamples = [
+            ['nik' => '3273010101990005', 'date' => '2026-07-13', 'clock_in' => '08:00:00', 'clock_out' => '17:00:00', 'status' => 'hadir', 'late_minutes' => 0],
+            ['nik' => '3273010101990006', 'date' => '2026-07-13', 'clock_in' => '08:30:00', 'clock_out' => '17:15:00', 'status' => 'terlambat', 'late_minutes' => 30],
+            ['nik' => '3273010101990007', 'date' => '2026-07-14', 'clock_in' => '07:50:00', 'clock_out' => '17:00:00', 'status' => 'hadir', 'late_minutes' => 0],
+            ['nik' => '3273010101990008', 'date' => '2026-07-14', 'clock_in' => '09:00:00', 'clock_out' => '17:30:00', 'status' => 'terlambat', 'late_minutes' => 60],
+        ];
 
-        foreach ($attendanceEmployees as $employee) {
-            $current = $startOfMonth->copy();
-            while ($current->lte($endOfMonth)) {
-                if ($current->isWeekday()) {
-                    $clockInHour = rand(7, 8);
-                    $clockInMinute = rand(0, 45);
-                    $clockIn = sprintf('%02d:%02d:00', $clockInHour, $clockInMinute);
-                    $clockOut = sprintf('%02d:%02d:00', 17, rand(0, 30));
-
-                    $lateMinutes = ($clockInHour > 8 || ($clockInHour == 8 && $clockInMinute > 0)) ? (($clockInHour - 8) * 60 + $clockInMinute) : 0;
-                    $status = $lateMinutes > 15 ? 'terlambat' : 'hadir';
-
-                    Attendance::create([
-                        'employee_id' => $employee->id,
-                        'date' => $current->format('Y-m-d'),
-                        'clock_in' => $clockIn,
-                        'clock_out' => $clockOut,
-                        'location' => 'Kantor Pusat',
-                        'status' => $status,
-                        'late_minutes' => $lateMinutes,
-                        'notes' => $lateMinutes > 0 ? 'Terlambat ' . $lateMinutes . ' menit' : null,
-                        'created_by_id' => 1,
-                    ]);
-                }
-                $current->addDay();
+        foreach ($attendanceSamples as $data) {
+            $employee = Employee::where('nik', $data['nik'])->first();
+            if ($employee) {
+                Attendance::create([
+                    'employee_id' => $employee->id,
+                    'date' => $data['date'],
+                    'clock_in' => $data['clock_in'],
+                    'clock_out' => $data['clock_out'],
+                    'location' => 'Kantor Pusat',
+                    'status' => $data['status'],
+                    'late_minutes' => $data['late_minutes'],
+                    'notes' => $data['late_minutes'] > 0 ? 'Terlambat ' . $data['late_minutes'] . ' menit' : null,
+                    'created_by_id' => 1,
+                ]);
             }
         }
 
@@ -241,7 +339,7 @@ class DatabaseSeeder extends Seeder
                         'allowances' => $allowances,
                         'deductions' => $deductions,
                     ]),
-                    'status' => $period === '2026-07' ? 'draft' : 'paid',
+                    'status' => $period === '2026-07' ? 'pending' : 'paid',
                     'payment_date' => $period === '2026-07' ? null : Carbon::parse($period . '-28'),
                 ]);
             }

@@ -32,7 +32,7 @@ class PayrollController extends Controller
             $query->where('status', $status);
         }
 
-        $payrolls = $query->latest()->paginate(10);
+        $payrolls = $query->orderBy('period', 'desc')->paginate(10);
 
         return view('admin.payrolls.index', compact('payrolls'));
     }
@@ -164,7 +164,7 @@ class PayrollController extends Controller
             'allowances' => $allowances,
             'deductions' => $deductions,
         ];
-        $validated['status'] = 'draft';
+        $validated['status'] = 'pending';
 
         Payroll::create($validated);
 
