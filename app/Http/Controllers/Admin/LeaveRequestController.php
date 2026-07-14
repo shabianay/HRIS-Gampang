@@ -7,6 +7,7 @@ use App\Mail\LeaveRequestNotification;
 use App\Models\Attendance;
 use App\Models\Department;
 use App\Models\LeaveRequest;
+use App\Models\Notification;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -86,6 +87,14 @@ class LeaveRequestController extends Controller
         // Kirim notifikasi email ke pegawai
         Mail::send(new LeaveRequestNotification($leaveRequest, 'approved'));
 
+        Notification::send(
+            $leaveRequest->employee->user_id,
+            'leave_request',
+            'Cuti Disetujui',
+            'Pengajuan cuti ' . $leaveRequest->leaveType->name . ' Anda (' . $leaveRequest->days . ' hari) telah disetujui.',
+            route('employee.leave-requests.show', $leaveRequest)
+        );
+
         return redirect()->route('leave-requests.index')
             ->with('success', 'Pengajuan cuti berhasil disetujui.');
     }
@@ -101,5 +110,36 @@ class LeaveRequestController extends Controller
         ]);
 
         return back()->with('success', 'Pengajuan cuti dibatalkan.');
+    }
+
+    public function reject(Request $request, LeaveRequest $leaveRequest)
+    {
+        if ($leaveRequest->status !== 'pending') {
+            return back()->with('error', 'Hanya pengajuan pending yang bisa ditolak.');
+        }
+
+        $request->validate([
+            'rejection_reason' => 'nullable|string|max:500',
+        ]);
+
+        $leaveRequest->update([
+            'status' => 'rejected',
+            'approved_by_id' => auth()->id(),
+            'approved_at' => now(),
+            'rejection_reason' => $request->rejection_reason,
+        ]);
+
+        Mail::send(new LeaveRequestNotification($leaveRequest, 'rejected'));
+
+        Notification::send(
+            $leaveRequest->employee->user_id,
+            'leave_request',
+            'Cuti Ditolak',
+            'Pengajuan cuti ' . $leaveRequest->leaveType->name . ' Anda (' . $leaveRequest->days . ' hari) telah ditolak.' . ($request->rejection_reason ? ' Alasan: ' . $request->rejection_reason : ''),
+            route('employee.leave-requests.show', $leaveRequest)
+        );
+
+        return redirect()->route('leave-requests.index')
+            ->with('success', 'Pengajuan cuti berhasil ditolak.');
     }
 }

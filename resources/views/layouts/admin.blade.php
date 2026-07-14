@@ -298,7 +298,8 @@
 
                 <div class="flex-1"></div>
 
-                <div class="hidden sm:flex sm:items-center">
+                <div class="hidden sm:flex sm:items-center sm:gap-2">
+                    <x-notification-dropdown />
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button
@@ -352,7 +353,8 @@
                     </x-dropdown>
                 </div>
 
-                <div class="sm:hidden">
+                <div class="flex items-center gap-1 sm:hidden">
+                    <x-notification-dropdown />
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button

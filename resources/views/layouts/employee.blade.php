@@ -129,7 +129,8 @@
 
                 <div class="flex-1"></div>
 
-                <div class="hidden sm:flex sm:items-center">
+                <div class="hidden sm:flex sm:items-center sm:gap-2">
+                    <x-notification-dropdown />
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button class="inline-flex items-center gap-2 rounded-xl border border-slate-200/80 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300 focus:outline-none">
@@ -166,7 +167,8 @@
                     </x-dropdown>
                 </div>
 
-                <div class="sm:hidden">
+                <div class="flex items-center gap-1 sm:hidden">
+                    <x-notification-dropdown />
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-100 text-xs font-bold text-primary-700 shadow-sm">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\Notification;
 use App\Models\Payroll;
 use App\Models\SalaryComponent;
 use Illuminate\Http\Request;
@@ -166,7 +167,18 @@ class PayrollController extends Controller
         ];
         $validated['status'] = 'pending';
 
-        Payroll::create($validated);
+        $payroll = Payroll::create($validated);
+
+        $employee = Employee::find($validated['employee_id']);
+        if ($employee && $employee->user_id) {
+            Notification::send(
+                $employee->user_id,
+                'payroll',
+                'Slip Gaji Baru',
+                'Slip gaji periode ' . $validated['period'] . ' telah tersedia. Silakan cek slip gaji Anda.',
+                route('employee.payrolls.show', $payroll)
+            );
+        }
 
         return redirect()->route('payrolls.index')
             ->with('success', 'Payroll berhasil dibuat.');
@@ -178,6 +190,17 @@ class PayrollController extends Controller
             'status' => 'paid',
             'payment_date' => now(),
         ]);
+
+        $payroll->load('employee');
+        if ($payroll->employee && $payroll->employee->user_id) {
+            Notification::send(
+                $payroll->employee->user_id,
+                'payroll',
+                'Gaji Telah Dibayar',
+                'Gaji periode ' . $payroll->period . ' telah dibayarkan.',
+                route('employee.payrolls.show', $payroll)
+            );
+        }
 
         return redirect()->route('payrolls.index')
             ->with('success', 'Payroll berhasil ditandai sebagai dibayar.');
@@ -191,12 +214,29 @@ class PayrollController extends Controller
             return back()->with('error', 'Tidak ada payroll yang dipilih.');
         }
 
-        $count = Payroll::whereIn('id', $ids)
+        $payrolls = Payroll::with('employee')
+            ->whereIn('id', $ids)
             ->where('status', '!=', 'paid')
-            ->update([
+            ->get();
+
+        $count = 0;
+        foreach ($payrolls as $payroll) {
+            $payroll->update([
                 'status' => 'paid',
                 'payment_date' => now(),
             ]);
+            $count++;
+
+            if ($payroll->employee && $payroll->employee->user_id) {
+                Notification::send(
+                    $payroll->employee->user_id,
+                    'payroll',
+                    'Gaji Telah Dibayar',
+                    'Gaji periode ' . $payroll->period . ' telah dibayarkan.',
+                    route('employee.payrolls.show', $payroll)
+                );
+            }
+        }
 
         return redirect()->route('payrolls.index')
             ->with('success', $count . ' payroll berhasil ditandai sebagai dibayar.');

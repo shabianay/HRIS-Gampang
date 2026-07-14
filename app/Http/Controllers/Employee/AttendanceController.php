@@ -80,6 +80,11 @@ class AttendanceController extends Controller
 
     public function clockIn(Request $request)
     {
+        $validated = $request->validate([
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+        ]);
+
         $employee = auth()->user()->employee;
 
         // Check if already clocked in today
@@ -123,8 +128,8 @@ class AttendanceController extends Controller
         $data = [
             'clock_in' => $clockInTime,
             'location' => $request->ip(),
-            'clock_in_latitude' => $request->input('latitude'),
-            'clock_in_longitude' => $request->input('longitude'),
+            'clock_in_latitude' => $validated['latitude'],
+            'clock_in_longitude' => $validated['longitude'],
             'device_info' => $request->header('User-Agent'),
             'ip_address' => $request->ip(),
             'status' => $status,
@@ -147,6 +152,11 @@ class AttendanceController extends Controller
 
     public function clockOut(Request $request)
     {
+        $validated = $request->validate([
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+        ]);
+
         $employee = auth()->user()->employee;
 
         $todayAttendance = Attendance::where('employee_id', $employee->id)
@@ -179,11 +189,11 @@ class AttendanceController extends Controller
 
         $todayAttendance->update([
             'clock_out' => now(),
-            'clock_out_latitude' => $request->input('latitude'),
-            'clock_out_longitude' => $request->input('longitude'),
+            'clock_out_latitude' => $validated['latitude'],
+            'clock_out_longitude' => $validated['longitude'],
             'device_info' => $request->header('User-Agent'),
             'ip_address' => $request->ip(),
-            'photo_out' => $photoOutPath, // Changed from clock_out_photo_url
+            'photo_out' => $photoOutPath,
         ]);
 
         return back()->with('success', 'Clock Out berhasil dicatat!');

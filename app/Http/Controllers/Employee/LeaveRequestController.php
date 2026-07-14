@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Employee;
 use App\Http\Controllers\Controller;
 use App\Models\LeaveRequest;
 use App\Models\LeaveType;
+use App\Models\Notification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -92,7 +93,14 @@ class LeaveRequestController extends Controller
             $data['supporting_document'] = $request->file('supporting_document')->store('leave-documents', 'public');
         }
 
-        LeaveRequest::create($data);
+        $leaveRequest = LeaveRequest::create($data);
+
+        Notification::sendToAdmins(
+            'leave_request',
+            'Pengajuan Cuti Baru',
+            $leaveRequest->employee->full_name . ' mengajukan cuti ' . $leaveRequest->leaveType->name . ' (' . $leaveRequest->days . ' hari)',
+            route('leave-requests.show', $leaveRequest)
+        );
 
         return redirect()->route('employee.leave-requests.index')
             ->with('success', 'Pengajuan cuti berhasil dikirim.');
