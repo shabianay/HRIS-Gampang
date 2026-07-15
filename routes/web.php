@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\OfficeHourController;
 use App\Http\Controllers\Admin\EmployeeImportController;
 use App\Http\Controllers\Admin\LogController;
+use App\Http\Controllers\Admin\PayrollSettingController;
 use App\Http\Controllers\Employee\LeaveRequestController as EmployeeLeaveRequestController;
 use App\Http\Controllers\Employee\PayrollController as EmployeePayrollController;
 use App\Http\Controllers\NotificationController;
@@ -78,6 +79,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/settings/office-hours', [OfficeHourController::class, 'index'])->name('settings.office-hours');
     Route::put('/settings/office-hours/{officeHour}', [OfficeHourController::class, 'update'])->name('settings.office-hours.update');
+
+    Route::get('/settings/payroll', [PayrollSettingController::class, 'index'])->name('settings.payroll');
+    Route::put('/settings/payroll', [PayrollSettingController::class, 'update'])->name('settings.payroll.update');
 
     Route::get('/logs', [LogController::class, 'index'])->name('logs.index');
 

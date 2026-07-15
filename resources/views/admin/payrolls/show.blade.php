@@ -68,6 +68,10 @@
                     <p class="mt-0.5 text-sm font-medium text-slate-900">{{ $payroll->employee->position?->name ?? '-' }}</p>
                 </div>
                 <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Status PTKP</p>
+                    <p class="mt-0.5 text-sm font-medium text-slate-900">{{ $payroll->employee->ptkp_status ?? '-' }}</p>
+                </div>
+                <div>
                     <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Status</p>
                     <span class="badge mt-0.5 @if($payroll->status == 'pending') badge @elseif($payroll->status == 'processed') badge-warning @else badge-success @endif">{{ ucfirst($payroll->status) }}</span>
                 </div>
@@ -99,9 +103,18 @@
                                 </tr>
                             @endforeach
                             @foreach($payroll->details['deductions'] ?? [] as $key => $amount)
+                                @php
+                                    $label = match($key) {
+                                        'bpjs_kesehatan' => 'BPJS Kesehatan (1%)',
+                                        'bpjs_ketenagakerjaan' => 'BPJS Ketenagakerjaan (JHT 2% + JP 1%)',
+                                        'pph21' => 'PPh Pasal 21',
+                                        default => ucwords(str_replace('_', ' ', $key))
+                                    };
+                                    $badgeClass = in_array($key, ['bpjs_kesehatan', 'bpjs_ketenagakerjaan', 'pph21']) ? 'badge-danger' : 'badge';
+                                @endphp
                                 <tr>
-                                    <td class="px-4 py-3 text-sm text-slate-900">{{ ucwords(str_replace('_', ' ', $key)) }}</td>
-                                    <td class="px-4 py-3"><span class="badge badge-danger">Potongan</span></td>
+                                    <td class="px-4 py-3 text-sm text-slate-900">{{ $label }}</td>
+                                    <td class="px-4 py-3"><span class="badge {{ $badgeClass }}">{{ in_array($key, ['bpjs_kesehatan', 'bpjs_ketenagakerjaan', 'pph21']) ? 'Pot. Wajib' : 'Potongan' }}</span></td>
                                     <td class="px-4 py-3 text-right text-sm text-red-600">- Rp {{ number_format($amount, 0, ',', '.') }}</td>
                                 </tr>
                             @endforeach

@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->call(PayrollSettingSeeder::class);
+
         // ─── Departments ───────────────────────────────────────────────
         $departments = [
             ['name' => 'Teknologi Informasi', 'code' => 'IT', 'description' => 'Divisi Teknologi Informasi'],

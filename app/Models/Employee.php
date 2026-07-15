@@ -14,7 +14,7 @@ class Employee extends Model
         'user_id', 'nik', 'full_name', 'gender', 'birth_date', 'birth_place',
         'phone', 'address', 'department_id', 'position_id', 'join_date',
         'status', 'bank_name', 'bank_account', 'bank_account_name',
-        'npwp', 'bpjs_kesehatan', 'bpjs_ketenagakerjaan', 'notes',
+        'npwp', 'bpjs_kesehatan', 'bpjs_ketenagakerjaan', 'ptkp_status', 'notes',
     ];
 
     protected $casts = [

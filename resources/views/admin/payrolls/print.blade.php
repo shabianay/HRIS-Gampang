@@ -79,9 +79,17 @@
                             </tr>
                         @endforeach
                         @foreach($payroll->details['deductions'] ?? [] as $key => $amount)
+                            @php
+                                $label = match($key) {
+                                    'bpjs_kesehatan' => 'BPJS Kesehatan (1%)',
+                                    'bpjs_ketenagakerjaan' => 'BPJS Ketenagakerjaan (JHT 2% + JP 1%)',
+                                    'pph21' => 'PPh Pasal 21',
+                                    default => ucwords(str_replace('_', ' ', $key))
+                                };
+                            @endphp
                             <tr>
-                                <td class="px-4 py-3 text-sm text-slate-900">{{ ucwords(str_replace('_', ' ', $key)) }}</td>
-                                <td class="px-4 py-3"><span class="badge badge-danger">Potongan</span></td>
+                                <td class="px-4 py-3 text-sm text-slate-900">{{ $label }}</td>
+                                <td class="px-4 py-3"><span class="badge badge-danger">Pot. Wajib</span></td>
                                 <td class="px-4 py-3 text-right text-sm text-red-600">- Rp {{ number_format($amount, 0, ',', '.') }}</td>
                             </tr>
                         @endforeach

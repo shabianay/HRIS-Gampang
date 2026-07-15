@@ -91,6 +91,7 @@ class EmployeeController extends Controller
             'npwp' => $request->npwp,
             'bpjs_kesehatan' => $request->bpjs_kesehatan,
             'bpjs_ketenagakerjaan' => $request->bpjs_ketenagakerjaan,
+            'ptkp_status' => $request->ptkp_status,
             'notes' => $request->notes,
         ]);
 

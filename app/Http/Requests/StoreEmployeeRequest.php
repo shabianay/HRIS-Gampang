@@ -34,6 +34,7 @@ class StoreEmployeeRequest extends FormRequest
             'npwp' => 'nullable|string|max:20',
             'bpjs_kesehatan' => 'nullable|string|max:20',
             'bpjs_ketenagakerjaan' => 'nullable|string|max:20',
+            'ptkp_status' => 'nullable|string|max:10',
             'notes' => 'nullable|string',
         ];
     }

@@ -7,6 +7,7 @@ use App\Models\Employee;
 use App\Models\Notification;
 use App\Models\Payroll;
 use App\Models\SalaryComponent;
+use App\Services\PayrollCalculationService;
 use Illuminate\Http\Request;
 
 class PayrollController extends Controller
@@ -71,6 +72,8 @@ class PayrollController extends Controller
             'salary_components.*' => 'exists:salary_components,id',
         ]);
 
+        $employee = Employee::findOrFail($validated['employee_id']);
+
         $componentIds = $request->input('salary_components', []);
         $selectedComponents = SalaryComponent::whereIn('id', $componentIds)->get();
 
@@ -93,6 +96,26 @@ class PayrollController extends Controller
             }
         }
 
+        // Auto-calculate BPJS & PPh21
+        $calcService = new PayrollCalculationService();
+        $ptkpStatus = $employee->ptkp_status ?? 'TK/0';
+        $bpjsPph21 = $calcService->calculateAll(
+            $validated['base_salary'],
+            $totalAllowance,
+            $ptkpStatus,
+            $validated['period'],
+            $employee->id
+        );
+
+        $autoDeductions = [
+            'bpjs_kesehatan' => $bpjsPph21['bpjs_kesehatan_employee'],
+            'bpjs_ketenagakerjaan' => $bpjsPph21['bpjs_ketenagakerjaan_employee'],
+            'pph21' => $bpjsPph21['pph21'],
+        ];
+
+        $deductions = array_merge($deductions, $autoDeductions);
+        $totalDeduction += array_sum($autoDeductions);
+
         $netSalary = $validated['base_salary'] + $totalAllowance - $totalDeduction;
 
         $validated['total_allowance'] = $totalAllowance;
@@ -102,6 +125,9 @@ class PayrollController extends Controller
             'allowances' => $allowances,
             'deductions' => $deductions,
         ];
+        $validated['bpjs_kesehatan_employee'] = $bpjsPph21['bpjs_kesehatan_employee'];
+        $validated['bpjs_ketenagakerjaan_employee'] = $bpjsPph21['bpjs_ketenagakerjaan_employee'];
+        $validated['pph21'] = $bpjsPph21['pph21'];
 
         $payroll->update($validated);
 
@@ -134,6 +160,8 @@ class PayrollController extends Controller
             'salary_components.*' => 'exists:salary_components,id',
         ]);
 
+        $employee = Employee::findOrFail($validated['employee_id']);
+
         $componentIds = $request->input('salary_components', []);
         $selectedComponents = SalaryComponent::whereIn('id', $componentIds)->get();
 
@@ -156,6 +184,26 @@ class PayrollController extends Controller
             }
         }
 
+        // Auto-calculate BPJS & PPh21
+        $calcService = new PayrollCalculationService();
+        $ptkpStatus = $employee->ptkp_status ?? 'TK/0';
+        $bpjsPph21 = $calcService->calculateAll(
+            $validated['base_salary'],
+            $totalAllowance,
+            $ptkpStatus,
+            $validated['period'],
+            $employee->id
+        );
+
+        $autoDeductions = [
+            'bpjs_kesehatan' => $bpjsPph21['bpjs_kesehatan_employee'],
+            'bpjs_ketenagakerjaan' => $bpjsPph21['bpjs_ketenagakerjaan_employee'],
+            'pph21' => $bpjsPph21['pph21'],
+        ];
+
+        $deductions = array_merge($deductions, $autoDeductions);
+        $totalDeduction += array_sum($autoDeductions);
+
         $netSalary = $validated['base_salary'] + $totalAllowance - $totalDeduction;
 
         $validated['total_allowance'] = $totalAllowance;
@@ -166,11 +214,13 @@ class PayrollController extends Controller
             'deductions' => $deductions,
         ];
         $validated['status'] = 'pending';
+        $validated['bpjs_kesehatan_employee'] = $bpjsPph21['bpjs_kesehatan_employee'];
+        $validated['bpjs_ketenagakerjaan_employee'] = $bpjsPph21['bpjs_ketenagakerjaan_employee'];
+        $validated['pph21'] = $bpjsPph21['pph21'];
 
         $payroll = Payroll::create($validated);
 
-        $employee = Employee::find($validated['employee_id']);
-        if ($employee && $employee->user_id) {
+        if ($employee->user_id) {
             Notification::send(
                 $employee->user_id,
                 'payroll',

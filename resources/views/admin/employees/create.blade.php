@@ -157,6 +157,16 @@
                             <x-text-input id="bpjs_ketenagakerjaan" name="bpjs_ketenagakerjaan" type="text" class="block w-full" :value="old('bpjs_ketenagakerjaan')" />
                             <x-input-error :messages="$errors->get('bpjs_ketenagakerjaan')" class="mt-1" />
                         </div>
+                        <div class="space-y-1.5">
+                            <x-input-label for="ptkp_status" value="Status PTKP (PPh 21)" />
+                            <select id="ptkp_status" name="ptkp_status" class="input-field">
+                                <option value="">Pilih Status PTKP</option>
+                                @foreach(\App\Services\PayrollCalculationService::getPtkpStatuses() as $key => $label)
+                                    <option value="{{ $key }}" {{ old('ptkp_status') == $key ? 'selected' : '' }}>{{ $key }} - {{ $label }}</option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('ptkp_status')" class="mt-1" />
+                        </div>
                     </div>
                 </div>
 

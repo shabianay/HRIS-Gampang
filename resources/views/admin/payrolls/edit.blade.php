@@ -57,6 +57,19 @@
                     </div>
                 </div>
 
+                {{-- Auto Calculation Info --}}
+                <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                    <div class="flex items-start gap-3">
+                        <div class="flex-shrink-0 mt-0.5">
+                            <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-blue-800">Potongan Wajib Otomatis</p>
+                            <p class="text-xs text-blue-600 mt-1">BPJS Kesehatan (1%), BPJS Ketenagakerjaan (JHT 2% + JP 1%), dan PPh Pasal 21 akan dihitung ulang otomatis berdasarkan data terbaru pegawai.</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="mt-8 flex items-center gap-3">
                     <x-primary-button>Simpan Perubahan</x-primary-button>
                     <a href="{{ route('payrolls.show', $payroll) }}" class="btn-secondary">Batal</a>

@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class PayrollSetting extends Model
+{
+    protected $fillable = ['key', 'value'];
+
+    public static function getValue(string $key, $default = null): ?string
+    {
+        $setting = static::where('key', $key)->first();
+        return $setting ? $setting->value : $default;
+    }
+
+    public static function setValue(string $key, string $value): void
+    {
+        static::updateOrCreate(['key' => $key], ['value' => $value]);
+    }
+
+    public static function getDecimal(string $key, $default = 0): float
+    {
+        return (float) (static::getValue($key) ?? $default);
+    }
+
+    public static function getPTKP(string $status): int
+    {
+        $key = 'ptkp_' . strtolower(str_replace('/', '', $status));
+        return (int) (static::getValue($key) ?? 54000000);
+    }
+
+    public static function getAll(): array
+    {
+        return static::all()->pluck('value', 'key')->toArray();
+    }
+}

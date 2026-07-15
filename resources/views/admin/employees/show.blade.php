@@ -102,6 +102,10 @@
                         <dd class="text-sm text-slate-900 font-medium">{{ $employee->bpjs_ketenagakerjaan ?? '-' }}</dd>
                     </div>
                     <div class="flex justify-between">
+                        <dt class="text-sm font-medium text-slate-500">Status PTKP</dt>
+                        <dd class="text-sm text-slate-900 font-medium">{{ $employee->ptkp_status ?? '-' }}</dd>
+                    </div>
+                    <div class="flex justify-between">
                         <dt class="text-sm font-medium text-slate-500">Catatan</dt>
                         <dd class="text-sm text-slate-900 font-medium">{{ $employee->notes ?? '-' }}</dd>
                     </div>
